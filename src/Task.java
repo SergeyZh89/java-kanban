@@ -1,30 +1,45 @@
-
 class Task {
 
     private String name;
     private String descriprion;
-    private String status;
+    private Status status;
+    private int id;
 
-    public Task(String name, String descriprion, String status) {
+    public Task(String name, String descriprion) {
         this.name = name;
         this.descriprion = descriprion;
-        this.status = status;
+        this.status = Status.NEW;
     }
 
     public String getName() {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public String getDescriprion() {
         return descriprion;
     }
 
-    public String getStatus() {
+    public void setDescriprion(String descriprion) {
+        this.descriprion = descriprion;
+    }
+
+    public Status getStatus() {
         return status;
     }
 
-    @Override
-    public String toString() {
-        return "Задача:    " + name + " --> Описание: '" + descriprion + "'" + " Статус: " + status + ".";
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

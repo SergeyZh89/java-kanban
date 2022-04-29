@@ -1,30 +1,18 @@
-class Subtask {
+class SubTask extends Task {
 
-    private String name;
-    private String descriprion;
-    private String status;
+    private int epicIds;
 
-    public Subtask(String name, String descriprion, String status) {
 
-        this.name = name;
-        this.descriprion = descriprion;
-        this.status = status;
+    public SubTask(String name, String descriprion, int epicIds) {
+        super(name, descriprion);
+        this.epicIds = epicIds;
     }
 
-    public String getName() {
-        return name;
+    public int getEpicIds() {
+        return epicIds;
     }
 
-    public String getDescriprion() {
-        return descriprion;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    @Override
-    public String toString() {
-        return "Подзадача: " + name + " --> Описание: '" + descriprion + "'" + " Статус: " + status + ".";
+    public void setEpicIds(int epicIds) {
+        this.epicIds = epicIds;
     }
 }

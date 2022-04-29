@@ -1,41 +1,18 @@
-import java.util.HashMap;
+import java.util.ArrayList;
 
-class Epic {
+class Epic extends Task {
 
-    private String name;
-    private String descriprion;
-    private String status;
-    private final HashMap<Integer, Subtask> subTasks;
+    ArrayList<Integer> subtasksId = new ArrayList<>();
 
-    public Epic(String name, String descriprion, String status) {
-        this.name = name;
-        this.descriprion = descriprion;
-        this.status = status;
-        this.subTasks = new HashMap<>();
+    public Epic(String name, String descriprion) {
+        super(name, descriprion);
     }
 
-    public HashMap<Integer, Subtask> getSubTasks() {
-        return subTasks;
+    public ArrayList<Integer> getSubtasksId() {
+        return subtasksId;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public String getDescriprion() {
-        return descriprion;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    @Override
-    public String toString() {
-        return "ЭПИК:      " + name + " --> Описание: '" + descriprion + "'" + " Статус: " + status + ".";
+    public void setSubtasksId(ArrayList<Integer> subtasksId) {
+        this.subtasksId = subtasksId;
     }
 }
