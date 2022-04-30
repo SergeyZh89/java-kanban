@@ -15,4 +15,14 @@ class SubTask extends Task {
     public void setEpicIds(int epicIds) {
         this.epicIds = epicIds;
     }
+
+    @Override
+    public String toString() {
+        return "Подзадача: '" + getName() + '\'' +
+                ", Описание='" + getDescriprion() + '\'' +
+                ", status=" + getStatus() +
+                ", id=" + getId() +
+                ", epicID=" + epicIds;
+
+    }
 }

@@ -42,4 +42,12 @@ class Task {
     public void setId(int id) {
         this.id = id;
     }
+
+    @Override
+    public String toString() {
+        return "Задача: '" + name + '\'' +
+                ", Описание='" + descriprion + '\'' +
+                ", status=" + status +
+                ", id=" + id;
+    }
 }

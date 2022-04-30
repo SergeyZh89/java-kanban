@@ -101,45 +101,30 @@ class Manager {
         return tasks;
     }
 
-    public void setTasks(HashMap<Integer, Task> tasks) {
-        this.tasks = tasks;
-    }
-
     public HashMap<Integer, Epic> getEpics() {
         return epics;
-    }
-
-    public void setEpics(HashMap<Integer, Epic> epics) {
-        this.epics = epics;
     }
 
     public HashMap<Integer, SubTask> getSubtasks() {
         return subTasks;
     }
 
-    public void setSubtasks(HashMap<Integer, SubTask> subtasks) {
-        this.subTasks = subtasks;
-    }
-
     public void setStatusEpic(Epic epic) {
 
         ArrayList<SubTask> subTasksTemp = new ArrayList<>();
         int countNew = 0;
-        int countInProgress = 0;
         int countDONE = 0;
         for (Integer id : epic.getSubtasksId()) {
             subTasksTemp.add(subTasks.get(id));
             if (subTasks.get(id).getStatus().equals(Status.NEW)) {
                 countNew++;
-            } else if (subTasks.get(id).getStatus().equals(Status.IN_PROGRESS)) {
-                countInProgress++;
             } else if (subTasks.get(id).getStatus().equals(Status.DONE)) {
                 countDONE++;
             }
         }
-        if (countNew != 0 & countInProgress == 0 & countDONE == 0) {
+        if (countNew == subTasksTemp.size()) {
             epic.setStatus(Status.NEW);
-        } else if (countDONE != 0 & countInProgress == 0 & countNew == 0) {
+        } else if (countDONE == subTasksTemp.size()) {
             epic.setStatus(Status.DONE);
         } else {
             epic.setStatus(Status.IN_PROGRESS);
