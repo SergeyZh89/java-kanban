@@ -1,10 +1,14 @@
-import java.util.Map;
+import Manager.*;
+import Model.*;
+
 
 public class Main {
 
     public static void main(String[] args) {
 
-        Manager manager = new Manager();
+
+    TaskManager manager = Managers.getDefault();
+
 
 //        Создайте 2 задачи, один эпик с 2 подзадачами, а другой эпик с 1 подзадачей.
 
@@ -18,6 +22,12 @@ public class Main {
         manager.addNewSubTask(subTask1, epic1.getId());
         SubTask subTask2 = new SubTask("subtask2", "descr2", epic1.getId());
         manager.addNewSubTask(subTask2, epic1.getId());
+        manager.getEpic(3);
+        manager.getSubTask(4);
+        manager.getSubTask(5);
+        manager.getTask(2);
+        manager.getTask(2);
+        manager.getTask(2);
 
 //        Распечатайте списки эпиков, задач и подзадач, через System.out.println(..)
 
@@ -43,9 +53,11 @@ public class Main {
         manager.deleteEpicById(3);
 
         printMenu(manager);
+
+        historyMenu(manager);
     }
 
-    static void printMenu(Manager manager) {
+    static void printMenu(TaskManager manager) {
 
         for (Task task : manager.getTasks().values()) {
             System.out.println(task);
@@ -59,5 +71,13 @@ public class Main {
             System.out.println(subTask);
         }
         System.out.println("_____________________________________________________________________");
+    }
+
+    static void historyMenu(TaskManager manager ){
+        System.out.println("____________________________HISTORY_TASKS____________________________");
+
+        for (int i = 0; i < manager.getHistoryManager().getHistory().size(); i++) {
+            System.out.println((i + 1) + " " + manager.getHistoryManager().getHistory().get(i));
+        }
     }
 }

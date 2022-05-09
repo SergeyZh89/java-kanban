@@ -1,6 +1,8 @@
+package Model;
+
 import java.util.ArrayList;
 
-class Epic extends Task {
+public class Epic extends Task {
 
     private ArrayList<Integer> subtasksId;
 

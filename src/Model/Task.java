@@ -1,4 +1,8 @@
-class Task {
+package Model;
+
+import Manager.*;
+
+public class Task {
 
     private String name;
     private String descriprion;

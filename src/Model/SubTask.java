@@ -1,4 +1,6 @@
-class SubTask extends Task {
+package Model;
+
+public class SubTask extends Task {
 
     private int epicIds;
 
