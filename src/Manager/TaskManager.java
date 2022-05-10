@@ -2,9 +2,12 @@ package Manager;
 
 import Model.*;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.LinkedList;
 
 public interface TaskManager {
+
+    LinkedList<Task> getHistory();
 
     void addNewTask(Task task);
 
@@ -24,8 +27,6 @@ public interface TaskManager {
 
     SubTask getSubTask(int id);
 
-    HistoryManager getHistoryManager();
-
     void deleteTaskById(int id);
 
     void deleteEpicById(int id);
@@ -42,10 +43,10 @@ public interface TaskManager {
 
     void setStatusEpic(Epic epic);
 
-    HashMap<Integer, Task> getTasks();
+    ArrayList<Task> getTasks();
 
-    HashMap<Integer, Epic> getEpics();
+    ArrayList<Epic> getEpics();
 
-    HashMap<Integer, SubTask> getSubtasks();
+    ArrayList<SubTask> getSubtasks();
 
 }

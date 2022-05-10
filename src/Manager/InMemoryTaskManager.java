@@ -4,6 +4,7 @@ import Model.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 
 public class InMemoryTaskManager implements TaskManager {
 
@@ -15,8 +16,8 @@ public class InMemoryTaskManager implements TaskManager {
     private HistoryManager historyManager = Managers.getDefaultHistory();
 
     @Override
-    public HistoryManager getHistoryManager() {
-        return historyManager;
+    public LinkedList<Task> getHistory() {
+        return historyManager.getHistory();
     }
 
     @Override
@@ -127,18 +128,18 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public HashMap<Integer, Task> getTasks() {
-        return tasks;
+    public ArrayList<Task> getTasks() {
+        return new ArrayList<>(this.tasks.values());
     }
 
     @Override
-    public HashMap<Integer, Epic> getEpics() {
-        return epics;
+    public ArrayList<Epic> getEpics() {
+        return new ArrayList<>(this.epics.values());
     }
 
     @Override
-    public HashMap<Integer, SubTask> getSubtasks() {
-        return subTasks;
+    public ArrayList<SubTask> getSubtasks() {
+        return new ArrayList<>(this.subTasks.values());
     }
 
 

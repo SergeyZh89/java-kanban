@@ -59,15 +59,15 @@ public class Main {
 
     static void printMenu(TaskManager manager) {
 
-        for (Task task : manager.getTasks().values()) {
+        for (Task task : manager.getTasks()) {
             System.out.println(task);
         }
 
-        for (Epic epic : manager.getEpics().values()) {
+        for (Epic epic : manager.getEpics()) {
             System.out.println(epic);
         }
 
-        for (SubTask subTask : manager.getSubtasks().values()) {
+        for (SubTask subTask : manager.getSubtasks()) {
             System.out.println(subTask);
         }
         System.out.println("_____________________________________________________________________");
@@ -76,8 +76,8 @@ public class Main {
     static void historyMenu(TaskManager manager ){
         System.out.println("____________________________HISTORY_TASKS____________________________");
 
-        for (int i = 0; i < manager.getHistoryManager().getHistory().size(); i++) {
-            System.out.println((i + 1) + " " + manager.getHistoryManager().getHistory().get(i));
+        for (int i = 0; i < manager.getHistory().size(); i++) {
+            System.out.println((i + 1) + " " + manager.getHistory().get(i));
         }
     }
 }
