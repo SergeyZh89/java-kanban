@@ -3,11 +3,11 @@ package Manager;
 import Model.*;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
+import java.util.List;
 
 public interface TaskManager {
 
-    LinkedList<Task> getHistory();
+    List<Task> getHistory();
 
     void addNewTask(Task task);
 

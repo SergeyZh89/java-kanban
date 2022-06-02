@@ -2,11 +2,11 @@ package Manager;
 
 import Model.*;
 
-import java.util.LinkedList;
+import java.util.List;
 
 public interface HistoryManager {
 
     void add(Task task);
-
-    LinkedList<Task> getHistory();
+    void remove(int id);
+    List<Task> getHistory();
 }

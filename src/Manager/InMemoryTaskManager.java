@@ -4,7 +4,7 @@ import Model.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.List;
 
 public class InMemoryTaskManager implements TaskManager {
 
@@ -16,7 +16,7 @@ public class InMemoryTaskManager implements TaskManager {
     private HistoryManager historyManager = Managers.getDefaultHistory();
 
     @Override
-    public LinkedList<Task> getHistory() {
+    public List<Task> getHistory() {
         return historyManager.getHistory();
     }
 
@@ -84,21 +84,26 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void deleteTaskById(int id) {
         tasks.remove(id);
+        historyManager.remove(id);
     }
 
     @Override
     public void deleteEpicById(int id) {
         for (Integer subTasksId : epics.get(id).getSubtasksId()) {
             subTasks.remove(subTasksId);
+            historyManager.remove(subTasksId);
         }
         epics.remove(id);
+        historyManager.remove(id);
     }
 
     @Override
     public void deleteSubTaskById(int id) {
-        epics.get(subTasks.get(id).getEpicIds()).getSubtasksId().remove(id);
-        subTasks.remove(id);
+        epics.get(subTasks.get(id).getEpicIds()).getSubtasksId()
+                .remove(epics.get(subTasks.get(id).getEpicIds()).getSubtasksId().indexOf(id));
         setStatusEpic(epics.get(subTasks.get(id).getEpicIds()));
+        subTasks.remove(id);
+        historyManager.remove(id);
     }
 
     @Override
