@@ -48,9 +48,7 @@ public class Main {
 
 
 //        Удалите задачу, которая есть в истории, и проверьте, что при печати она не будет выводиться.
-
-        manager.deleteEpicById(3);
-        manager.deleteTaskById(1);
+        manager.deleteAllSubTasks();
 
         historyMenu(manager);
 

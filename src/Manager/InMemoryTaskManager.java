@@ -30,7 +30,6 @@ public class InMemoryTaskManager implements TaskManager {
     public void addNewEpic(Epic epic) {
         epics.put(getGeneratorId(), epic);
         epic.setId(generatorId);
-
     }
 
     @Override
@@ -52,7 +51,6 @@ public class InMemoryTaskManager implements TaskManager {
         ArrayList<Integer> subIds = new ArrayList<>(epics.get(id).getSubtasksId());
         epics.put(id, epic);
         epics.get(id).setSubtasksId(subIds);
-
     }
 
     @Override
@@ -108,17 +106,29 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteAllTasks() {
+        for (Integer id : tasks.keySet()) {
+            historyManager.remove(id);
+        }
         tasks.clear();
     }
 
     @Override
     public void deleteAllEpics() {
+        for (Integer id : epics.keySet()) {
+            historyManager.remove(id);
+        }
+        for (Integer id : subTasks.keySet()) {
+            historyManager.remove(id);
+        }
         epics.clear();
         subTasks.clear();
     }
 
     @Override
     public void deleteAllSubTasks() {
+        for (Integer id : subTasks.keySet()) {
+            historyManager.remove(id);
+        }
         subTasks.clear();
         for (Epic epic : epics.values()) {
             epic.getSubtasksId().clear();
@@ -147,9 +157,7 @@ public class InMemoryTaskManager implements TaskManager {
         return new ArrayList<>(this.subTasks.values());
     }
 
-
     public void setStatusEpic(Epic epic) {
-
         ArrayList<SubTask> subTasksTemp = new ArrayList<>();
         int countNew = 0;
         int countDONE = 0;

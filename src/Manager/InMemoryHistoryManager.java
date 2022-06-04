@@ -10,10 +10,16 @@ import java.util.List;
 
 public class InMemoryHistoryManager implements HistoryManager {
 
-
     private HashMap<Integer, Node> customLinkedList = new HashMap<>();
     private Node head;
     private Node tail;
+
+    @Override
+    public void remove(int id) {
+        removeNode(customLinkedList.remove(id));
+        customLinkedList.remove(id);
+
+    }
 
     @Override
     public void add(Task task) {
@@ -21,25 +27,6 @@ public class InMemoryHistoryManager implements HistoryManager {
             removeNode(customLinkedList.get(task.getId()));
         }
         lastLink(task);
-    }
-
-    private void lastLink(Task task) {
-        Node oldTail = tail;
-        Node newNode = new Node(oldTail, task, null);
-        tail = newNode;
-        if (oldTail == null) {
-            head = newNode;
-        } else {
-            oldTail.next = newNode;
-        }
-        customLinkedList.put(task.getId(), newNode);
-    }
-
-    @Override
-    public void remove(int id) {
-        removeNode(customLinkedList.remove(id));
-        customLinkedList.remove(id);
-
     }
 
     @Override
@@ -72,6 +59,18 @@ public class InMemoryHistoryManager implements HistoryManager {
             currentNode = currentNode.next;
         }
 
+    }
+
+    private void lastLink(Task task) {
+        Node oldTail = tail;
+        Node newNode = new Node(oldTail, task, null);
+        tail = newNode;
+        if (oldTail == null) {
+            head = newNode;
+        } else {
+            oldTail.next = newNode;
+        }
+        customLinkedList.put(task.getId(), newNode);
     }
 
     private List<Task> getTasks() {
