@@ -2,14 +2,14 @@ package Manager;
 
 import Model.*;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class InMemoryTaskManager implements TaskManager {
-
+public class InMemoryTaskManager implements TaskManager, Serializable {
+    private static final long serialVersionUID = 1L;
     private int generatorId = 0;
-
     private HashMap<Integer, Task> tasks = new HashMap<>();
     private HashMap<Integer, Epic> epics = new HashMap<>();
     private HashMap<Integer, SubTask> subTasks = new HashMap<>();

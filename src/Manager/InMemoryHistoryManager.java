@@ -2,14 +2,13 @@ package Manager;
 
 import Model.Task;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
-
 import java.util.List;
 
-
-public class InMemoryHistoryManager implements HistoryManager {
-
+public class InMemoryHistoryManager implements HistoryManager, Serializable {
+    private static final long serialVersionUID = 1L;
     private HashMap<Integer, Node> customLinkedList = new HashMap<>();
     private Node head;
     private Node tail;
@@ -18,7 +17,6 @@ public class InMemoryHistoryManager implements HistoryManager {
     public void remove(int id) {
         removeNode(customLinkedList.remove(id));
         customLinkedList.remove(id);
-
     }
 
     @Override
@@ -58,7 +56,6 @@ public class InMemoryHistoryManager implements HistoryManager {
             }
             currentNode = currentNode.next;
         }
-
     }
 
     private void lastLink(Task task) {
@@ -83,5 +80,4 @@ public class InMemoryHistoryManager implements HistoryManager {
         }
         return tasks;
     }
-
 }

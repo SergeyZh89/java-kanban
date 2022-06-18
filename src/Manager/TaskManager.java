@@ -2,11 +2,11 @@ package Manager;
 
 import Model.*;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public interface TaskManager {
-
+public interface TaskManager extends Serializable {
     List<Task> getHistory();
 
     void addNewTask(Task task);

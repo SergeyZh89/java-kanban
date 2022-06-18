@@ -2,8 +2,10 @@ package Model;
 
 import Manager.*;
 
-public class Task {
+import java.io.Serializable;
 
+public class Task implements Serializable {
+    private static final long serialVersionUID = 1L;
     private String name;
     private String descriprion;
     private Status status;

@@ -23,6 +23,7 @@ public class Main {
         manager.addNewSubTask(subTask3, epic1.getId());
         Epic epic2 = new Epic("epic2", "descr2");
         manager.addNewEpic(epic2);
+        manager.updateTask(task1,1, Status.DONE);
 
 //         Запросите созданные задачи несколько раз в разном порядке.
 

@@ -1,16 +1,15 @@
 package Model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Epic extends Task {
-
+public class Epic extends Task implements Serializable {
+    private static final long serialVersionUID = 1L;
     private ArrayList<Integer> subtasksId;
-
     public Epic(String name, String descriprion) {
         super(name, descriprion);
         subtasksId = new ArrayList<>();
     }
-
     public ArrayList<Integer> getSubtasksId() {
         return subtasksId;
     }
