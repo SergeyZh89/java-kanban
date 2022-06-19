@@ -1,17 +1,32 @@
 package Model;
 
-import java.io.Serializable;
+import Manager.Status;
+import Manager.TaskTypes;
+
 import java.util.ArrayList;
 
-public class Epic extends Task implements Serializable {
-    private static final long serialVersionUID = 1L;
+public class Epic extends Task {
     private ArrayList<Integer> subtasksId;
+    private TaskTypes type;
+
     public Epic(String name, String descriprion) {
         super(name, descriprion);
         subtasksId = new ArrayList<>();
+        this.type = TaskTypes.EPIC;
     }
+
+    public Epic(String name, String descriprion, Status status, int id) {
+        super(name, descriprion, status, id);
+        subtasksId = new ArrayList<>();
+        this.type = TaskTypes.EPIC;
+    }
+
     public ArrayList<Integer> getSubtasksId() {
         return subtasksId;
+    }
+
+    public TaskTypes getType() {
+        return type;
     }
 
     public void setSubtasksId(ArrayList<Integer> subtasksId) {

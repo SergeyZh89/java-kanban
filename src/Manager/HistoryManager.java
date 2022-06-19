@@ -1,12 +1,13 @@
 package Manager;
 
-import Model.*;
+import Model.Task;
 
-import java.io.Serializable;
 import java.util.List;
 
-public interface HistoryManager extends Serializable {
+public interface HistoryManager {
     void add(Task task);
+
     void remove(int id);
+
     List<Task> getHistory();
 }

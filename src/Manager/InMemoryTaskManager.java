@@ -1,19 +1,20 @@
 package Manager;
 
-import Model.*;
+import Model.Epic;
+import Model.SubTask;
+import Model.Task;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class InMemoryTaskManager implements TaskManager, Serializable {
-    private static final long serialVersionUID = 1L;
+public class InMemoryTaskManager implements TaskManager {
     private int generatorId = 0;
-    private HashMap<Integer, Task> tasks = new HashMap<>();
-    private HashMap<Integer, Epic> epics = new HashMap<>();
-    private HashMap<Integer, SubTask> subTasks = new HashMap<>();
+    protected HashMap<Integer, Task> tasks = new HashMap<>();
+    protected HashMap<Integer, Epic> epics = new HashMap<>();
+    protected HashMap<Integer, SubTask> subTasks = new HashMap<>();
     private HistoryManager historyManager = Managers.getDefaultHistory();
+
 
     @Override
     public List<Task> getHistory() {
@@ -176,5 +177,9 @@ public class InMemoryTaskManager implements TaskManager, Serializable {
         } else {
             epic.setStatus(Status.IN_PROGRESS);
         }
+    }
+
+    public HistoryManager getHistoryManager() {
+        return historyManager;
     }
 }

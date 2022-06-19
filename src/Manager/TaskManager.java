@@ -1,12 +1,13 @@
 package Manager;
 
-import Model.*;
+import Model.Epic;
+import Model.SubTask;
+import Model.Task;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public interface TaskManager extends Serializable {
+public interface TaskManager {
     List<Task> getHistory();
 
     void addNewTask(Task task);

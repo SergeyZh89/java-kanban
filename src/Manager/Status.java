@@ -1,8 +1,6 @@
 package Manager;
 
-import java.io.Serializable;
-
-public enum Status implements Serializable {
+public enum Status {
     NEW,
     IN_PROGRESS,
     DONE

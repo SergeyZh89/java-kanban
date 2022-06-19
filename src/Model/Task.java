@@ -1,20 +1,32 @@
 package Model;
 
-import Manager.*;
+import Manager.Status;
+import Manager.TaskTypes;
 
-import java.io.Serializable;
-
-public class Task implements Serializable {
-    private static final long serialVersionUID = 1L;
+public class Task {
     private String name;
     private String descriprion;
     private Status status;
     private int id;
+    private TaskTypes type;
 
     public Task(String name, String descriprion) {
         this.name = name;
         this.descriprion = descriprion;
         this.status = Status.NEW;
+        this.type = TaskTypes.TASK;
+    }
+
+    public Task(String name, String descriprion, Status status, int id) {
+        this.name = name;
+        this.descriprion = descriprion;
+        this.status = status;
+        this.id = id;
+        this.type = TaskTypes.TASK;
+    }
+
+    public TaskTypes getType() {
+        return type;
     }
 
     public String getName() {

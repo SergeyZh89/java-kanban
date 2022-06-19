@@ -2,14 +2,12 @@ package Manager;
 
 import Model.Task;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class InMemoryHistoryManager implements HistoryManager, Serializable {
-    private static final long serialVersionUID = 1L;
-    private HashMap<Integer, Node> customLinkedList = new HashMap<>();
+public class InMemoryHistoryManager implements HistoryManager {
+    protected HashMap<Integer, Node> customLinkedList = new HashMap<>();
     private Node head;
     private Node tail;
 
@@ -73,11 +71,18 @@ public class InMemoryHistoryManager implements HistoryManager, Serializable {
     private List<Task> getTasks() {
         List<Task> tasks = new ArrayList<>();
         Node currentNode = head;
-        tasks.add(currentNode.data);
-        while (currentNode.next != null) {
-            currentNode = currentNode.next;
+        if (!(currentNode == null)) {
             tasks.add(currentNode.data);
+            while (currentNode.next != null) {
+                currentNode = currentNode.next;
+                tasks.add(currentNode.data);
+            }
         }
+
         return tasks;
+    }
+
+    public HashMap<Integer, Node> getCustomLinkedList() {
+        return customLinkedList;
     }
 }
