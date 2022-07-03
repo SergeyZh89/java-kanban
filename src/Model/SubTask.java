@@ -3,6 +3,9 @@ package Model;
 import Manager.Status;
 import Manager.TaskTypes;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+
 public class SubTask extends Task {
     private int epicIds;
     private TaskTypes type;
@@ -13,8 +16,20 @@ public class SubTask extends Task {
         this.type = TaskTypes.SUBTASK;
     }
 
-    public SubTask(String name, String descriprion, Status status, int id, int epicIds) {
+    public SubTask(String name, String descriprion, int epicIds, Duration duration, LocalDateTime startTime) {
+        super(name, descriprion, duration, startTime);
+        this.epicIds = epicIds;
+        this.type = TaskTypes.SUBTASK;
+    }
+
+    public SubTask(String name, String descriprion, Status status, int id, int epicIds, TaskTypes type) {
         super(name, descriprion, status, id);
+        this.epicIds = epicIds;
+        this.type = TaskTypes.SUBTASK;
+    }
+
+    public SubTask(String name, String descriprion, Status status, int id, int epicIds, TaskTypes type, Duration duration, LocalDateTime startTime) {
+        super(name, descriprion, status, id, duration, startTime);
         this.epicIds = epicIds;
         this.type = TaskTypes.SUBTASK;
     }
@@ -25,19 +40,5 @@ public class SubTask extends Task {
 
     public TaskTypes getType() {
         return type;
-    }
-
-    public void setEpicIds(int epicIds) {
-        this.epicIds = epicIds;
-    }
-
-    @Override
-    public String toString() {
-        return "Подзадача: '" + getName() + '\'' +
-                ", Описание='" + getDescriprion() + '\'' +
-                ", status=" + getStatus() +
-                ", id=" + getId() +
-                ", epicID=" + epicIds;
-
     }
 }

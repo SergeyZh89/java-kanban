@@ -71,7 +71,7 @@ public class InMemoryHistoryManager implements HistoryManager {
     private List<Task> getTasks() {
         List<Task> tasks = new ArrayList<>();
         Node currentNode = head;
-        if (!(currentNode == null)) {
+        if (currentNode != null) {
             tasks.add(currentNode.data);
             while (currentNode.next != null) {
                 currentNode = currentNode.next;
@@ -80,9 +80,5 @@ public class InMemoryHistoryManager implements HistoryManager {
         }
 
         return tasks;
-    }
-
-    public HashMap<Integer, Node> getCustomLinkedList() {
-        return customLinkedList;
     }
 }

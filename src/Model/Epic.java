@@ -3,11 +3,16 @@ package Model;
 import Manager.Status;
 import Manager.TaskTypes;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Epic extends Task {
     private ArrayList<Integer> subtasksId;
-    private TaskTypes type;
+    private final TaskTypes type;
+
+    LocalDateTime endTime;
 
     public Epic(String name, String descriprion) {
         super(name, descriprion);
@@ -15,16 +20,24 @@ public class Epic extends Task {
         this.type = TaskTypes.EPIC;
     }
 
-    public Epic(String name, String descriprion, Status status, int id) {
+    public Epic(String name, String descriprion, Status status, int id, TaskTypes type) {
         super(name, descriprion, status, id);
         subtasksId = new ArrayList<>();
         this.type = TaskTypes.EPIC;
     }
 
-    public ArrayList<Integer> getSubtasksId() {
+    public Epic(String name, String descriprion, Status status, int id, TaskTypes type, Duration duration, LocalDateTime startTime) {
+        super(name, descriprion, status, id, duration, startTime);
+        subtasksId = new ArrayList<>();
+        this.type = TaskTypes.EPIC;
+    }
+
+
+    public List<Integer> getSubtasksId() {
         return subtasksId;
     }
 
+    @Override
     public TaskTypes getType() {
         return type;
     }
@@ -32,13 +45,11 @@ public class Epic extends Task {
     public void setSubtasksId(ArrayList<Integer> subtasksId) {
         this.subtasksId = subtasksId;
     }
+    public void setEndTime(LocalDateTime endTime) {
+        this.endTime = endTime;
+    }
 
-    @Override
-    public String toString() {
-        return "Эпик: '" + getName() + '\'' +
-                ", Описание='" + getDescriprion() + '\'' +
-                ", status=" + getStatus() +
-                ", id=" + getId() +
-                ", Подзадачи=" + subtasksId.toString();
+    public LocalDateTime getEndTime() {
+        return endTime;
     }
 }

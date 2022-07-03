@@ -1,6 +1,11 @@
 import Manager.*;
 import Model.*;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+
+import static java.util.Calendar.*;
+
 public class Main {
 
     public static void main(String[] args) {
@@ -9,7 +14,7 @@ public class Main {
 
 //        Создайте 2 задачи, один эпик с 2 подзадачами, а другой эпик с 1 подзадачей.
 
-        Task task1 = new Task("task1", "descr1");
+        Task task1 = new Task("task1", "descr1", Duration.ofMinutes(30), LocalDateTime.of(2022,JUNE,2,12,00));
         manager.addNewTask(task1);
         Task task2 = new Task("task2", "descr2");
         manager.addNewTask(task2);

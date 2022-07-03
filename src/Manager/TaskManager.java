@@ -50,4 +50,5 @@ public interface TaskManager {
 
     ArrayList<SubTask> getSubtasks();
 
+    ArrayList<Task> getPrioritizedTasks();
 }

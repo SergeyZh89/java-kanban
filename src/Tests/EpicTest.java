@@ -1,0 +1,74 @@
+package Tests;
+
+import Manager.Managers;
+import Manager.TaskManager;
+import Model.Epic;
+import Model.SubTask;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static Manager.Status.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+class EpicTest {
+
+    TaskManager manager;
+    Epic epic;
+
+    @BeforeEach
+    public void beforeEach() {
+        manager = Managers.getDefault();
+        epic = new Epic("epic", "epic decr");
+        manager.addNewEpic(epic);
+    }
+
+
+    @Test
+    public void epicWithOutSubTasks() {
+        assertEquals(NEW, manager.getEpic(epic.getId()).getStatus());
+    }
+
+    @Test
+    public void epicWithSubTasksStatusNew() {
+        SubTask sub = new SubTask("111", "111", epic.getId());
+        SubTask sub2 = new SubTask("222", "222", epic.getId());
+        manager.addNewSubTask(sub2, epic.getId());
+        manager.updateSubTask(sub, sub.getId(), NEW);
+        manager.addNewSubTask(sub, epic.getId());
+        manager.addNewSubTask(sub2, epic.getId());
+        assertEquals(NEW, manager.getEpic(epic.getId()).getStatus());
+    }
+
+    @Test
+    public void epicWithSubTasksStatusDone() {
+        SubTask sub = new SubTask("111", "111", epic.getId());
+        SubTask sub2 = new SubTask("222", "222", epic.getId());
+        manager.addNewSubTask(sub2, epic.getId());
+        manager.updateSubTask(sub, sub.getId(), NEW);
+        manager.updateSubTask(sub, sub.getId(), DONE);
+        manager.updateSubTask(sub2, sub2.getId(), DONE);
+        assertEquals(DONE, manager.getEpic(epic.getId()).getStatus());
+    }
+
+    @Test
+    public void epicWithSubTasksStatusNewAndDone() {
+        SubTask sub = new SubTask("111", "111", epic.getId());
+        SubTask sub2 = new SubTask("222", "222", epic.getId());
+        manager.addNewSubTask(sub, epic.getId());
+        manager.addNewSubTask(sub2, epic.getId());
+        manager.updateSubTask(sub, sub.getId(), NEW);
+        manager.updateSubTask(sub2, sub2.getId(), DONE);
+        assertEquals(IN_PROGRESS, manager.getEpic(epic.getId()).getStatus());
+    }
+
+    @Test
+    public void epicWithSubTasksStatusInProgress() {
+        SubTask sub = new SubTask("111", "111", epic.getId());
+        SubTask sub2 = new SubTask("222", "222", epic.getId());
+        manager.addNewSubTask(sub, epic.getId());
+        manager.addNewSubTask(sub2, epic.getId());
+        manager.updateSubTask(sub, sub.getId(), IN_PROGRESS);
+        manager.updateSubTask(sub2, sub2.getId(), IN_PROGRESS);
+        assertEquals(IN_PROGRESS, manager.getEpic(epic.getId()).getStatus());
+    }
+}
