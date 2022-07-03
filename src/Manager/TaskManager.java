@@ -42,8 +42,6 @@ public interface TaskManager {
 
     int getGeneratorId();
 
-    void setStatusEpic(Epic epic);
-
     ArrayList<Task> getTasks();
 
     ArrayList<Epic> getEpics();

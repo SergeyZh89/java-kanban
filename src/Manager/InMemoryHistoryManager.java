@@ -31,29 +31,32 @@ public class InMemoryHistoryManager implements HistoryManager {
     }
 
     private void removeNode(Node node) {
-        if (head == null) {
-            return;
-        }
-        if (head == tail) {
-            head = null;
-            tail = null;
-            return;
-        }
-        if (head.data == node.data) {
-            head = head.next;
-            return;
-        }
-        Node currentNode = head;
-        while (currentNode.next != null) {
-            if (currentNode.next.data == node.data) {
-                if (tail == currentNode.next) {
-                    tail = currentNode;
-                }
-                currentNode.next = currentNode.next.next;
+        if (node != null) {
+            if (head == null) {
                 return;
             }
-            currentNode = currentNode.next;
+            if (head == tail) {
+                head = null;
+                tail = null;
+                return;
+            }
+            if (head.data == node.data) {
+                head = head.next;
+                return;
+            }
+            Node currentNode = head;
+            while (currentNode.next != null) {
+                if (currentNode.next.data == node.data) {
+                    if (tail == currentNode.next) {
+                        tail = currentNode;
+                    }
+                    currentNode.next = currentNode.next.next;
+                    return;
+                }
+                currentNode = currentNode.next;
+            }
         }
+
     }
 
     private void lastLink(Task task) {

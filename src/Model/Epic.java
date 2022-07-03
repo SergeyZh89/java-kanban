@@ -12,7 +12,7 @@ public class Epic extends Task {
     private ArrayList<Integer> subtasksId;
     private final TaskTypes type;
 
-    LocalDateTime endTime;
+    private LocalDateTime endTime;
 
     public Epic(String name, String descriprion) {
         super(name, descriprion);

@@ -12,8 +12,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class EpicTest {
 
-    TaskManager manager;
-    Epic epic;
+    private TaskManager manager;
+    private Epic epic;
 
     @BeforeEach
     public void beforeEach() {

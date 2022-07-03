@@ -22,7 +22,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
         FileBackedTasksManager fbt = Managers.getDefaultFile();
         File file = new File("tasks.csv");
 
-        Task task1 = new Task("task1", "descr1", Duration.ofMinutes(30), LocalDateTime.of(2022, JUNE, 1, 10, 00));
+        Task task1 = new Task("task1", "descr1", Duration.ofMinutes(29), LocalDateTime.of(2022, JUNE, 1, 10, 00));
         fbt.addNewTask(task1);
         Task task2 = new Task("task2", "descr2", Duration.ofMinutes(29), LocalDateTime.of(2022, JUNE, 1, 10, 30));
         fbt.addNewTask(task2);
@@ -44,6 +44,9 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
         for (Task prioritizedTask : fbt.getPrioritizedTasks()) {
             System.out.println(prioritizedTask.getStartTime() + " " + prioritizedTask.getId());
         }
+        System.out.println(fbt.getTasks());
+        System.out.println(fbt.getEpics());
+        System.out.println(fbt.getSubtasks());
         FileBackedTasksManager load = FileBackedTasksManager.loadFromFile(file);
 
         System.out.println("____HYSTORY____");
@@ -121,7 +124,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
 
                     } else if (lines[1].equals("EPIC")) {
                         Epic epic;
-                        if (!lines[6].equals("null")) {
+                        if (lines[6].equals("null") && lines[7] == null) {
                             epic = new Epic(lines[2], lines[4], Status.valueOf(lines[3]),
                                     Integer.parseInt(lines[0]), TaskTypes.EPIC,
                                     Duration.parse(lines[6]), LocalDateTime.parse(lines[7]));
