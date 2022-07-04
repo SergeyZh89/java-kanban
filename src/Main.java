@@ -1,20 +1,23 @@
-import Manager.*;
-import Model.*;
+import Manager.Managers;
+import Manager.Status;
+import Manager.TaskManager;
+import Model.Epic;
+import Model.SubTask;
+import Model.Task;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 
-import static java.util.Calendar.*;
+import static java.util.Calendar.JUNE;
 
 public class Main {
 
     public static void main(String[] args) {
-
         TaskManager manager = Managers.getDefault();
 
 //        Создайте 2 задачи, один эпик с 2 подзадачами, а другой эпик с 1 подзадачей.
 
-        Task task1 = new Task("task1", "descr1", Duration.ofMinutes(30), LocalDateTime.of(2022,JUNE,2,12,00));
+        Task task1 = new Task("task1", "descr1", Duration.ofMinutes(30), LocalDateTime.of(2022, JUNE, 2, 12, 00));
         manager.addNewTask(task1);
         Task task2 = new Task("task2", "descr2");
         manager.addNewTask(task2);
@@ -28,7 +31,7 @@ public class Main {
         manager.addNewSubTask(subTask3, epic1.getId());
         Epic epic2 = new Epic("epic2", "descr2");
         manager.addNewEpic(epic2);
-        manager.updateTask(task1,1, Status.DONE);
+        manager.updateTask(task1, 1, Status.DONE);
 
 //         Запросите созданные задачи несколько раз в разном порядке.
 
@@ -61,7 +64,6 @@ public class Main {
     }
 
     static void printMenu(TaskManager manager) {
-
         for (Task task : manager.getTasks()) {
             System.out.println(task);
         }
@@ -83,6 +85,5 @@ public class Main {
             System.out.println(task.getName());
         }
         System.out.println("________________________________________________________");
-
     }
 }

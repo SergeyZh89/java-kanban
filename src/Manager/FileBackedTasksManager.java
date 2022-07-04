@@ -9,7 +9,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static java.util.Calendar.*;
+import static java.util.Calendar.JUNE;
 
 public class FileBackedTasksManager extends InMemoryTaskManager implements TaskManager {
     static FileBackedTasksManager loadFromFile(File file) {
@@ -28,7 +28,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
         fbt.addNewTask(task2);
         Epic epic3 = new Epic("epic1", "descr1");
         fbt.addNewEpic(epic3);
-        SubTask subTask4 = new SubTask("subtask1", "descr1", epic3.getId(), Duration.ofMinutes(29), LocalDateTime.of(2022, JUNE, 1, 11, 00));
+        SubTask subTask4 = new SubTask("subtask1", "descr1", epic3.getId(), Duration.ofMinutes(30), LocalDateTime.of(2022, JUNE, 1, 11, 00));
         fbt.addNewSubTask(subTask4, epic3.getId());
         SubTask subTask5 = new SubTask("subtask2", "descr2", epic3.getId());
         fbt.addNewSubTask(subTask5, epic3.getId());
@@ -103,7 +103,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
         return null;
     }
 
-
     public void fileFromString(File file) {
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             br.readLine();
@@ -124,7 +123,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
 
                     } else if (lines[1].equals("EPIC")) {
                         Epic epic;
-                        if (lines[6].equals("null") && lines[7] == null) {
+                        if (!lines[6].equals("null") && !lines[7].equals("null")) {
                             epic = new Epic(lines[2], lines[4], Status.valueOf(lines[3]),
                                     Integer.parseInt(lines[0]), TaskTypes.EPIC,
                                     Duration.parse(lines[6]), LocalDateTime.parse(lines[7]));
@@ -148,7 +147,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
                         }
                         subTasks.put(Integer.parseInt(lines[0]), subTask);
                         epics.get(Integer.parseInt(lines[5])).getSubtasksId().add(Integer.parseInt(lines[0]));
-
                     }
                 } else {
                     String lne = br.readLine();

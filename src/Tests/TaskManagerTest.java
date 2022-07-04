@@ -3,7 +3,9 @@ package Tests;
 import Manager.FileBackedTasksManager;
 import Manager.Managers;
 import Manager.TaskManager;
-import Model.*;
+import Model.Epic;
+import Model.SubTask;
+import Model.Task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -14,7 +16,8 @@ import java.util.ArrayList;
 
 import static Manager.Status.*;
 import static java.util.Calendar.JUNE;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 abstract class TaskManagerTest<T extends TaskManager> {
     private T taskManager;

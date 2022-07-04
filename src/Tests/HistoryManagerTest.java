@@ -8,14 +8,14 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class HistoryManagerTest {
-
     private HistoryManager historyManager;
 
     @BeforeEach
-    void beforeEach(){
+    void beforeEach() {
         historyManager = new InMemoryHistoryManager();
     }
 
@@ -23,11 +23,9 @@ class HistoryManagerTest {
     void add() {
         Task task = new Task("task", "task decr");
         historyManager.add(task);
-            final List<Task> history = historyManager.getHistory();
-        /* я не понимаю, что тут нужно сделать, кроме как удалить. Просто этот метод практически 1 в 1 с примера
-         из яндекс практикума, кроме 24 поля*/
-            assertNotNull(history, "История не пустая.");
-            assertEquals(1, history.size(), "История не пустая.");
+        final List<Task> history = historyManager.getHistory();
+        assertNotNull(history, "История не пустая.");
+        assertEquals(1, history.size(), "История не пустая.");
     }
 
     @Test

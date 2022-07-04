@@ -11,7 +11,6 @@ import static Manager.Status.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class EpicTest {
-
     private TaskManager manager;
     private Epic epic;
 
@@ -21,7 +20,6 @@ class EpicTest {
         epic = new Epic("epic", "epic decr");
         manager.addNewEpic(epic);
     }
-
 
     @Test
     public void epicWithOutSubTasks() {

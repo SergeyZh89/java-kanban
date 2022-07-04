@@ -14,7 +14,6 @@ public class InMemoryTaskManager implements TaskManager {
     protected HashMap<Integer, Task> tasks = new HashMap<>();
     protected HashMap<Integer, Epic> epics = new HashMap<>();
     protected HashMap<Integer, SubTask> subTasks = new HashMap<>();
-
     protected Set<Task> priorityTasks = new TreeSet<>(new ComparatorTasks());
     protected ArrayList<Task> notPriorityTasks = new ArrayList<>();
     private final HistoryManager historyManager = Managers.getDefaultHistory();
@@ -56,24 +55,22 @@ public class InMemoryTaskManager implements TaskManager {
         LocalDateTime start = LocalDateTime.MAX;
         LocalDateTime end = LocalDateTime.MIN;
         Duration duration = Duration.ZERO;
-        for (SubTask value : subTasks.values()) {
-            if (value.getEpicIds() == epic.getId() && value.getDuration() != null) {
-                duration = duration.plus(value.getDuration());
+        for (Integer integer : epics.get(epic.getId()).getSubtasksId()) {
+            if (subTasks.get(integer).getDuration() != null) {
+                duration = duration.plus(subTasks.get(integer).getDuration());
             }
-            if (value.getEpicIds() == epic.getId() && value.getStartTime() != null) {
-                if (start.isAfter(value.getStartTime())){
-                    start = value.getStartTime();
+            if (subTasks.get(integer).getStartTime() != null) {
+                if (start.isAfter(subTasks.get(integer).getStartTime())) {
+                    start = subTasks.get(integer).getStartTime();
+                }
+                if (end.isBefore(subTasks.get(integer).getEndtime())) {
+                    end = subTasks.get(integer).getEndtime();
                 }
             }
-            if (value.getEpicIds() == epic.getId() && value.getStartTime() != null) {
-                if (end.isBefore(value.getEndtime())){
-                    end = value.getEndtime();
-                }
-            }
+            epic.setDuration(duration);
+            epic.setStartTime(start);
+            epic.setEndTime(end);
         }
-        epic.setDuration(duration);
-        epic.setStartTime(start);
-        epic.setEndTime(end);
     }
 
     @Override
@@ -105,21 +102,25 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void addNewSubTask(SubTask subTask, int epicId) {
-        subTasks.put(getGeneratorId(), subTask);
-        subTask.setId(generatorId);
-        epics.get(epicId).getSubtasksId().add(generatorId);
-        if (subTask.getStartTime() != null) {
-            epicTime(epics.get(epicId));
-        }
         if (isDataTime(subTask)) {
             try {
                 validatorTimeTasks(subTask);
                 priorityTasks.add(subTask);
+                subTasks.put(getGeneratorId(), subTask);
+                subTask.setId(generatorId);
+                epics.get(epicId).getSubtasksId().add(generatorId);
             } catch (IllegalArgumentException e) {
                 System.out.println(e.getMessage());
             }
         } else {
+            subTasks.put(getGeneratorId(), subTask);
+            subTask.setId(generatorId);
+            epics.get(epicId).getSubtasksId().add(generatorId);
             notPriorityTasks.add(subTask);
+        }
+
+        if (subTask.getStartTime() != null) {
+            epicTime(epics.get(epicId));
         }
         setStatusEpic(epics.get(epicId));
     }
@@ -182,15 +183,14 @@ public class InMemoryTaskManager implements TaskManager {
         }
         for (Task task : sub) {
             for (Task priorityTask : priorityTasks) {
-                if (priorityTask.getId() == task.getId()){
+                if (priorityTask.getId() == task.getId()) {
                     priorityTasks.remove(task);
                     break;
-                }else {
+                } else {
                     notPriorityTasks.remove(task);
                 }
             }
         }
-
         epics.remove(id);
         historyManager.remove(id);
     }
@@ -214,15 +214,15 @@ public class InMemoryTaskManager implements TaskManager {
         }
         for (Task value : tasks.values()) {
             for (Task priorityTask : priorityTasks) {
-                if (priorityTask.getId() == value.getId()){
+                if (priorityTask.getId() == value.getId()) {
                     priorityTasks.remove(value);
                     break;
-                }else {
+                } else {
                     notPriorityTasks.remove(value);
                 }
             }
         }
-        tasks.clear();;
+        tasks.clear();
     }
 
     @Override
@@ -252,10 +252,10 @@ public class InMemoryTaskManager implements TaskManager {
         }
         for (Task value : subTasks.values()) {
             for (Task priorityTask : priorityTasks) {
-                if (priorityTask.getId() == value.getId()){
+                if (priorityTask.getId() == value.getId()) {
                     priorityTasks.remove(value);
                     break;
-                }else {
+                } else {
                     notPriorityTasks.remove(value);
                 }
             }
@@ -268,8 +268,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
-    @Override
-    public int getGeneratorId() {
+    private int getGeneratorId() {
         ++generatorId;
         return generatorId;
     }

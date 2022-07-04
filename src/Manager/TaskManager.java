@@ -40,8 +40,6 @@ public interface TaskManager {
 
     void deleteAllSubTasks();
 
-    int getGeneratorId();
-
     ArrayList<Task> getTasks();
 
     ArrayList<Epic> getEpics();

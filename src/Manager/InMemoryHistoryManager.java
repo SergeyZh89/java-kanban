@@ -56,7 +56,6 @@ public class InMemoryHistoryManager implements HistoryManager {
                 currentNode = currentNode.next;
             }
         }
-
     }
 
     private void lastLink(Task task) {
@@ -81,7 +80,6 @@ public class InMemoryHistoryManager implements HistoryManager {
                 tasks.add(currentNode.data);
             }
         }
-
         return tasks;
     }
 }

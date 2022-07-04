@@ -11,7 +11,6 @@ import java.util.List;
 public class Epic extends Task {
     private ArrayList<Integer> subtasksId;
     private final TaskTypes type;
-
     private LocalDateTime endTime;
 
     public Epic(String name, String descriprion) {
@@ -32,7 +31,6 @@ public class Epic extends Task {
         this.type = TaskTypes.EPIC;
     }
 
-
     public List<Integer> getSubtasksId() {
         return subtasksId;
     }
@@ -45,6 +43,7 @@ public class Epic extends Task {
     public void setSubtasksId(ArrayList<Integer> subtasksId) {
         this.subtasksId = subtasksId;
     }
+
     public void setEndTime(LocalDateTime endTime) {
         this.endTime = endTime;
     }
