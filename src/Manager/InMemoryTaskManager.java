@@ -118,7 +118,6 @@ public class InMemoryTaskManager implements TaskManager {
             epics.get(epicId).getSubtasksId().add(generatorId);
             notPriorityTasks.add(subTask);
         }
-
         if (subTask.getStartTime() != null) {
             epicTime(epics.get(epicId));
         }
