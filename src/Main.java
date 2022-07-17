@@ -1,89 +1,80 @@
+import Client.KVTaskClient;
+import Manager.HTTPTaskManager;
+import Manager.HistoryManager;
 import Manager.Managers;
-import Manager.Status;
-import Manager.TaskManager;
 import Model.Epic;
 import Model.SubTask;
 import Model.Task;
+import Server.KVServer;
+import TypeAdapters.*;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
+import java.io.IOException;
+import java.net.URI;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
-import static java.util.Calendar.JUNE;
-
 public class Main {
 
-    public static void main(String[] args) {
-        TaskManager manager = Managers.getDefault();
+    static URI url = URI.create("http://localhost:8078/register");
+    static Gson gson = new GsonBuilder()
+            .registerTypeAdapter(LocalDateTime.class, new LocalDateAdapter())
+            .registerTypeAdapter(Task.class, new TaskAdapter())
+            .registerTypeAdapter(Epic.class, new EpicAdapter())
+            .registerTypeAdapter(SubTask.class, new SubTaskAdapter())
+            .registerTypeAdapter(HistoryManager.class, new HistoryManagerAdapter())
+            .create();
 
-//        Создайте 2 задачи, один эпик с 2 подзадачами, а другой эпик с 1 подзадачей.
+    public static void main(String[] args) throws IOException, InterruptedException {
+        try {
+            new KVServer().start();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+//        HTTPTaskManager manager = Managers.getDefault(url);
+        Task task1 = new Task("task1", "decr");
+        Task task2 = new Task("task2", "decr", Duration.ofMinutes(30), LocalDateTime.of(2022, 11, 1, 11, 00));
+//
+//        Epic epic3 = new Epic("epic1", "decr");
+//        SubTask subTask4 = new SubTask("subTask1", "decr", epic3.getId(), Duration.ofMinutes(30), LocalDateTime.of(2022, 5, 7, 10, 11));
+//        manager.addNewTask(task1);
+//        manager.addNewTask(task2);
+//        manager.addNewEpic(epic3);
+//        manager.addNewSubTask(subTask4, epic3.getId());
+//        manager.getTask(1);
+//        manager.getTask(2);
+//        manager.getEpic(3);
+//        manager.getSubTask(4);
+//        System.out.println("HISTORY " + manager.getHistory());
+//
+//        System.out.println(manager.getSubtasks());
+//        HTTPTaskManager w = manager.loadFromFile();
+//        System.out.println("_________________________________________");
+//        System.out.println(w.getTasks());
+//        System.out.println(w.getEpics());
+//        System.out.println(w.getSubtasks());
+//        System.out.println(manager.getPrioritizedTasks());
+        KVTaskClient client = new KVTaskClient(url);
 
-        Task task1 = new Task("task1", "descr1", Duration.ofMinutes(30), LocalDateTime.of(2022, JUNE, 2, 12, 00));
-        manager.addNewTask(task1);
-        Task task2 = new Task("task2", "descr2");
-        manager.addNewTask(task2);
-        Epic epic1 = new Epic("epic1", "descr1");
-        manager.addNewEpic(epic1);
-        SubTask subTask1 = new SubTask("subtask1", "descr1", epic1.getId());
-        manager.addNewSubTask(subTask1, epic1.getId());
-        SubTask subTask2 = new SubTask("subtask2", "descr2", epic1.getId());
-        manager.addNewSubTask(subTask2, epic1.getId());
-        SubTask subTask3 = new SubTask("subtask2", "descr2", epic1.getId());
-        manager.addNewSubTask(subTask3, epic1.getId());
-        Epic epic2 = new Epic("epic2", "descr2");
-        manager.addNewEpic(epic2);
-        manager.updateTask(task1, 1, Status.DONE);
-
-//         Запросите созданные задачи несколько раз в разном порядке.
-
-        manager.getEpic(3);
-        manager.getEpic(3);
-        manager.getTask(2);
-        manager.getTask(1);
-        manager.getSubTask(4);
-        manager.getSubTask(6);
-        manager.getEpic(3);
-        manager.getTask(1);
-        manager.getSubTask(5);
-        manager.getSubTask(4);
-        manager.getTask(1);
-        manager.getEpic(7);
-        manager.getEpic(3);
-
-        printMenu(manager);
-
-//        После каждого запроса выведите историю и убедитесь, что в ней нет повторов.
-
-        historyMenu(manager);
-
-
-//        Удалите задачу, которая есть в истории, и проверьте, что при печати она не будет выводиться.
-        manager.deleteAllSubTasks();
-
-        historyMenu(manager);
-
-    }
-
-    static void printMenu(TaskManager manager) {
-        for (Task task : manager.getTasks()) {
-            System.out.println(task);
+        try {
+            client.put("123",gson.toJson(task1));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
 
-        for (Epic epic : manager.getEpics()) {
-            System.out.println(epic);
+        System.out.println(client.load("123"));
+
+        try {
+            client.put("123",gson.toJson(task2));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
 
-        for (SubTask subTask : manager.getSubtasks()) {
-            System.out.println(subTask);
-        }
-        System.out.println("_____________________________________________________________________");
-    }
-
-    static void historyMenu(TaskManager manager) {
-        System.out.println("____________________________HISTORY_TASKS____________________________");
-
-        for (Task task : manager.getHistory()) {
-            System.out.println(task.getName());
-        }
-        System.out.println("________________________________________________________");
+        System.out.println(client.load("123"));
     }
 }

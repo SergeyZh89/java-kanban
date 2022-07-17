@@ -61,9 +61,9 @@ abstract class TaskManagerTest<T extends TaskManager> {
         Epic epic = new Epic("epic", "epic decr");
         taskManager.addNewEpic(epic);
         SubTask subTask = new SubTask("subTask", "subTask decr", epic.getId());
-        taskManager.addNewSubTask(subTask, epic.getId());
+        taskManager.addNewSubTask(subTask);
         SubTask subTask2 = new SubTask("subTask2", "subTask decr", epic.getId());
-        taskManager.addNewSubTask(subTask2, epic.getId());
+        taskManager.addNewSubTask(subTask2);
         assertEquals(NEW, taskManager.getEpics().get(0).getStatus(), "Статус не совпадает");
         Epic savedEpic = taskManager.getEpic(epic.getId());
         assertNotNull(savedEpic, "Задача не найдена.");
@@ -83,7 +83,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
         Epic epic3 = new Epic("epic3", "epic decr");
         taskManager.addNewEpic(epic3);
         SubTask subTask3 = new SubTask("subTask3", "subTask decr", epic3.getId());
-        taskManager.addNewSubTask(subTask3, epic3.getId());
+        taskManager.addNewSubTask(subTask3);
         taskManager.deleteAllEpics();
         assertEquals(0, taskManager.getEpics().size(), "Эпики не удалены");
     }
@@ -93,7 +93,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
         Epic epic = new Epic("epic", "epic decr");
         taskManager.addNewEpic(epic);
         SubTask subTask = new SubTask("subTask", "subTask decr", epic.getId());
-        taskManager.addNewSubTask(subTask, epic.getId());
+        taskManager.addNewSubTask(subTask);
         SubTask savedSubTask = taskManager.getSubTask(subTask.getId());
         assertNotNull(subTask, "Задача не найдена.");
         assertEquals(subTask, savedSubTask, "Задачи не совпадают.");
@@ -106,9 +106,9 @@ abstract class TaskManagerTest<T extends TaskManager> {
         taskManager.deleteSubTaskById(subTask.getId());
         assertEquals(0, taskManager.getSubtasks().size(), "Подзадача не удалена");
         SubTask subTask2 = new SubTask("subTask2", "subTask decr", epic.getId());
-        taskManager.addNewSubTask(subTask2, epic.getId());
+        taskManager.addNewSubTask(subTask2);
         SubTask subTask3 = new SubTask("subTask3", "subTask decr", epic.getId());
-        taskManager.addNewSubTask(subTask3, epic.getId());
+        taskManager.addNewSubTask(subTask3);
         taskManager.deleteAllSubTasks();
         assertEquals(0, taskManager.getSubtasks().size(), "Подзадачи не удалены");
     }
@@ -122,9 +122,9 @@ abstract class TaskManagerTest<T extends TaskManager> {
         Epic epic = new Epic("epic1", "descr1");
         fbk.addNewEpic(epic);
         SubTask subTask = new SubTask("subtask2", "descr2", epic.getId(), Duration.ofMinutes(29), LocalDateTime.of(2022, JUNE, 1, 11, 30));
-        fbk.addNewSubTask(subTask, epic.getId());
+        fbk.addNewSubTask(subTask);
         SubTask subTask2 = new SubTask("subtask2", "descr2", epic.getId());
-        fbk.addNewSubTask(subTask2, epic.getId());
+        fbk.addNewSubTask(subTask2);
         Epic epic2 = new Epic("epic1", "descr1");
         fbk.addNewEpic(epic2);
         Task task2 = new Task("task1", "descr1");

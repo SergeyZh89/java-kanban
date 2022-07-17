@@ -5,52 +5,62 @@ import Manager.TaskTypes;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class Task {
     private String name;
-    private String descriprion;
+    private String decription;
     private Status status;
     private int id;
-    private TaskTypes type;
+    private TaskTypes typeTask;
     private Duration duration;
     private LocalDateTime startTime;
 
-    public Task(String name, String descriprion) {
-        this.name = name;
-        this.descriprion = descriprion;
+    public Task() {
         this.status = Status.NEW;
-        this.type = TaskTypes.TASK;
+        this.typeTask = TaskTypes.TASK;
     }
 
-    public Task(String name, String descriprion, Duration duration, LocalDateTime startTime) {
+    public Task(String name, String decription) {
         this.name = name;
-        this.descriprion = descriprion;
+        this.decription = decription;
         this.status = Status.NEW;
-        this.type = TaskTypes.TASK;
+        this.typeTask = TaskTypes.TASK;
+    }
+
+    public Task(String name, String decription, Duration duration, LocalDateTime startTime) {
+        this.name = name;
+        this.decription = decription;
+        this.status = Status.NEW;
+        this.typeTask = TaskTypes.TASK;
         this.duration = duration;
         this.startTime = startTime;
     }
 
-    public Task(String name, String descriprion, Status status, int id, Duration duration, LocalDateTime startTime) {
+    public Task(String name, String decription, Status status, int id, Duration duration, LocalDateTime startTime) {
         this.name = name;
-        this.descriprion = descriprion;
+        this.decription = decription;
         this.status = status;
         this.id = id;
-        this.type = TaskTypes.TASK;
+        this.typeTask = TaskTypes.TASK;
         this.duration = duration;
         this.startTime = startTime;
     }
 
-    public Task(String name, String descriprion, Status status, int id) {
-        this.name = name;
-        this.descriprion = descriprion;
-        this.status = status;
-        this.id = id;
-        this.type = TaskTypes.TASK;
+    public void setTypeTask(TaskTypes typeTask) {
+        this.typeTask = typeTask;
     }
 
-    public TaskTypes getType() {
-        return type;
+    public Task(String name, String decription, Status status, int id) {
+        this.name = name;
+        this.decription = decription;
+        this.status = status;
+        this.id = id;
+        this.typeTask = TaskTypes.TASK;
+    }
+
+    public TaskTypes getTypeTask() {
+        return typeTask;
     }
 
     public String getName() {
@@ -61,12 +71,12 @@ public class Task {
         this.name = name;
     }
 
-    public String getDescriprion() {
-        return descriprion;
+    public String getdecription() {
+        return decription;
     }
 
-    public void setDescriprion(String descriprion) {
-        this.descriprion = descriprion;
+    public void setdecription(String decription) {
+        this.decription = decription;
     }
 
     public Status getStatus() {
@@ -109,12 +119,25 @@ public class Task {
     public String toString() {
         return "Task{" +
                 "name='" + name + '\'' +
-                ", descriprion='" + descriprion + '\'' +
+                ", decription='" + decription + '\'' +
                 ", status=" + status +
                 ", id=" + id +
-                ", type=" + type +
+                ", type=" + typeTask +
                 ", duration=" + duration +
                 ", startTime=" + startTime +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Task task = (Task) o;
+        return id == task.id && Objects.equals(name, task.name) && Objects.equals(decription, task.decription) && status == task.status && typeTask == task.typeTask && Objects.equals(duration, task.duration) && Objects.equals(startTime, task.startTime);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, decription, status, id, typeTask, duration, startTime);
     }
 }
