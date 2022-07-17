@@ -45,9 +45,9 @@ public class HistoryManagerAdapter extends TypeAdapter<HistoryManager> {
 
     @Override
     public HistoryManager read(JsonReader reader) throws IOException {
-        reader.beginArray();
         String fieldName = null;
         InMemoryHistoryManager historyManager = (InMemoryHistoryManager) Managers.getDefaultHistory();
+        reader.beginArray();
         while (reader.hasNext()) {
             reader.beginObject();
             JsonToken token = reader.peek();

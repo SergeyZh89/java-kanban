@@ -27,17 +27,20 @@ public class HttpTaskServer {
     private static final int PORT = 8080;
     private static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
     private HttpServer server;
-    private static Gson gson = new GsonBuilder()
-            .registerTypeAdapter(LocalDateTime.class, new LocalDateAdapter())
-            .registerTypeAdapter(Task.class, new TaskAdapter())
-            .registerTypeAdapter(Epic.class, new EpicAdapter())
-            .registerTypeAdapter(SubTask.class, new SubTaskAdapter())
-            .registerTypeAdapter(HistoryManager.class, new HistoryManagerAdapter())
-            .create();
+    private Gson gson;
     private static FileBackedTasksManager fbtm = Managers.getDefaultFile();
-    private static HTTPTaskManager httpTaskManager = Managers.getDefault(URI.create("http://localhost:8078/register"));
+    private HTTPTaskManager httpTaskManager;
+
 
     public void start() throws IOException {
+        gson = new GsonBuilder()
+                .registerTypeAdapter(LocalDateTime.class, new LocalDateAdapter())
+                .registerTypeAdapter(Task.class, new TaskAdapter())
+                .registerTypeAdapter(Epic.class, new EpicAdapter())
+                .registerTypeAdapter(SubTask.class, new SubTaskAdapter())
+                .registerTypeAdapter(HistoryManager.class, new HistoryManagerAdapter())
+                .create();
+        httpTaskManager = Managers.getDefault(URI.create("http://localhost:8078/register"));
         server = HttpServer.create(new InetSocketAddress(PORT), 0);
         server.createContext("/tasks/all", new TaskHandler());
         server.createContext("/tasks/", new TaskHandler());
@@ -55,17 +58,7 @@ public class HttpTaskServer {
         server.stop(0);
     }
 
-    public static void main(String[] args) throws IOException {
-        System.out.println();
-        System.out.println();
-        System.out.println();
-        System.out.println();
-        System.out.println();
-        HttpTaskServer server = new HttpTaskServer();
-        server.start();
-    }
-
-    static class TaskHandler implements HttpHandler {
+    class TaskHandler implements HttpHandler {
         @Override
         public void handle(HttpExchange exchange) throws IOException {
             OutputStream os = exchange.getResponseBody();
@@ -76,37 +69,26 @@ public class HttpTaskServer {
                 case "GET":
                     if (path.endsWith("/tasks/task")) {
                         exchange.sendResponseHeaders(200, 0);
-                        String tasksGson = gson.toJson(fbtm.getTasks());
+                        String tasksGson = gson.toJson(httpTaskManager.getTasks());
                         os.write(tasksGson.getBytes(DEFAULT_CHARSET));
                     } else if (path.endsWith("/tasks/task/")) {
                         exchange.sendResponseHeaders(200, 0);
                         String query = exchange.getRequestURI().getQuery().split("=")[1];
-                        for (Task task : httpTaskManager.getTasks()) {
-                            if (task.getId() == Integer.parseInt(query)) {
-                                String json = gson.toJson(task);
-                                os.write(json.getBytes(DEFAULT_CHARSET));
-                            }
-                        }
+                        String json = gson.toJson( httpTaskManager.getTask(Integer.parseInt(query)));
+                        os.write(json.getBytes(DEFAULT_CHARSET));
                     } else if (path.endsWith("/tasks/subtask")) {
                         exchange.sendResponseHeaders(200, 0);
-                        String tasksGson = gson.toJson(fbtm.getSubtasks());
+                        String tasksGson = gson.toJson(httpTaskManager.getSubtasks());
                         os.write(tasksGson.getBytes(DEFAULT_CHARSET));
                     } else if (path.endsWith("/tasks/subtask/")) {
                         String query = exchange.getRequestURI().getQuery().split("=")[1];
-                        for (SubTask subtask : httpTaskManager.getSubtasks()) {
-                            if (subtask.getId() == Integer.parseInt(query)) {
-                                String subTaskGson = gson.toJson(subtask);
-                                os.write(subTaskGson.getBytes(DEFAULT_CHARSET));
-                            }
-                        }
+                        String json = gson.toJson( httpTaskManager.getSubTask(Integer.parseInt(query)));
+                        os.write(json.getBytes(DEFAULT_CHARSET));
                     } else if (path.endsWith("/tasks/subTask/epic")) {
                         exchange.sendResponseHeaders(200, 0);
                         String query = exchange.getRequestURI().getQuery().split("=")[1];
-                        for (Epic epic : httpTaskManager.getEpics()) {
-                            if (epic.getId() == Integer.parseInt(query)) {
-                                epic.getSubtasksId();
-                            }
-                        }
+                        String json = gson.toJson( httpTaskManager.getEpic(Integer.parseInt(query)));
+                        os.write(json.getBytes(DEFAULT_CHARSET));
                     } else if (path.endsWith("/tasks/epic")) {
                         exchange.sendResponseHeaders(200, 0);
                         String tasksGson = gson.toJson(httpTaskManager.getEpics());
@@ -114,20 +96,12 @@ public class HttpTaskServer {
                     } else if (path.endsWith("/tasks/epic/")) {
                         exchange.sendResponseHeaders(200, 0);
                         String query = exchange.getRequestURI().getQuery().split("=")[1];
-                        for (Epic epic : httpTaskManager.getEpics()) {
-                            if (epic.getId() == Integer.parseInt(query)) {
-                                String epicGson = gson.toJson(epic);
-                                os.write(epicGson.getBytes(DEFAULT_CHARSET));
-                            }
-                        }
+                        String json = gson.toJson( httpTaskManager.getEpic(Integer.parseInt(query)));
+                        os.write(json.getBytes(DEFAULT_CHARSET));
                     } else if (path.endsWith("/tasks/history")) {
                         exchange.sendResponseHeaders(200, 0);
                         String historyJson = gson.toJson(httpTaskManager.getHistory());
-                        os.write(historyJson.getBytes(StandardCharsets.UTF_8));
-                    } else if (path.endsWith("/tasks/")) {
-                        exchange.sendResponseHeaders(200, 0);
-                        String priorityJson = gson.toJson(httpTaskManager.getPrioritizedTasks());
-                        os.write(priorityJson.getBytes(DEFAULT_CHARSET));
+                        os.write(historyJson.getBytes(DEFAULT_CHARSET));
                     }
                     break;
                 case "POST":
@@ -146,11 +120,10 @@ public class HttpTaskServer {
                         }
                     } else if (path.endsWith("/tasks/subTask/")) {
                         exchange.sendResponseHeaders(201, 0);
-                        String query = exchange.getRequestURI().getQuery().split("=")[1];
                         String body = new String(is.readAllBytes(), DEFAULT_CHARSET);
                         SubTask subTask = gson.fromJson(body, SubTask.class);
                         if (httpTaskManager.getSubtasks().size() != 0 && subTask.getId() != 0) {
-                            for (Task subTask1 : httpTaskManager.getTasks()) {
+                            for (SubTask subTask1 : httpTaskManager.getSubtasks()) {
                                 if (subTask1.getId() == subTask.getId()) {
                                     subTask1.setStatus(subTask.getStatus());
                                 }
@@ -164,7 +137,7 @@ public class HttpTaskServer {
                         String body = new String(is.readAllBytes(), DEFAULT_CHARSET);
                         Epic epic = gson.fromJson(body, Epic.class);
                         if (httpTaskManager.getEpics().size() != 0 && epic.getId() != 0) {
-                            for (Task epic1 : httpTaskManager.getEpics()) {
+                            for (Epic epic1 : httpTaskManager.getEpics()) {
                                 if (epic1.getId() == epic.getId()) {
                                     epic1.setStatus(epic.getStatus());
                                 }

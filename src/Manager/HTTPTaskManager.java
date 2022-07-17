@@ -45,7 +45,7 @@ public class HTTPTaskManager extends FileBackedTasksManager {
         }
     }
 
-    static public HTTPTaskManager loadFromFile() throws IOException, InterruptedException {
+    public static HTTPTaskManager loadFromFile() throws IOException, InterruptedException {
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(LocalDateTime.class, new LocalDateAdapter())
                 .registerTypeAdapter(Task.class, new TaskAdapter())
@@ -53,7 +53,6 @@ public class HTTPTaskManager extends FileBackedTasksManager {
                 .registerTypeAdapter(SubTask.class, new SubTaskAdapter())
                 .registerTypeAdapter(HistoryManager.class, new HistoryManagerAdapter())
                 .create();
-        HTTPTaskManager manager = gson.fromJson(client.load(key), HTTPTaskManager.class);
-        return manager;
+        return gson.fromJson(client.load(key), HTTPTaskManager.class);
     }
 }

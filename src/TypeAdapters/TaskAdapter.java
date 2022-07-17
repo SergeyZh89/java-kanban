@@ -38,45 +38,45 @@ public class TaskAdapter extends TypeAdapter<Task> {
 
     @Override
     public Task read(JsonReader reader) throws IOException {
-        Task task = new Task();
-        reader.beginObject();
-        String fieldname = null;
-        while (reader.hasNext()) {
-            JsonToken token = reader.peek();
-            if (token.equals(JsonToken.NAME)) {
-                fieldname = reader.nextName();
+            Task task = new Task();
+            reader.beginObject();
+            String fieldname = null;
+            while (reader.hasNext()) {
+                JsonToken token = reader.peek();
+                if (token.equals(JsonToken.NAME)) {
+                    fieldname = reader.nextName();
+                }
+                if ("name".equals(fieldname)) {
+                    token = reader.peek();
+                    task.setName(reader.nextString());
+                }
+                if ("decription".equals(fieldname)) {
+                    token = reader.peek();
+                    task.setdecription(reader.nextString());
+                }
+                if ("status".equals(fieldname)) {
+                    token = reader.peek();
+                    task.setStatus(Status.valueOf(reader.nextString()));
+                }
+                if ("id".equals(fieldname)) {
+                    token = reader.peek();
+                    task.setId(reader.nextInt());
+                }
+                if ("typeTask".equals(fieldname)) {
+                    token = reader.peek();
+                    task.setTypeTask(TaskTypes.valueOf(reader.nextString()));
+                }
+                if ("duration".equals(fieldname)) {
+                    token = reader.peek();
+                    task.setDuration(Duration.parse(reader.nextString()));
+                }
+                if ("startTime".equals(fieldname)) {
+                    token = reader.peek();
+                    task.setStartTime(LocalDateTime.parse((reader.nextString())));
+                }
             }
-            if ("name".equals(fieldname)) {
-                token = reader.peek();
-                task.setName(reader.nextString());
-            }
-            if ("decription".equals(fieldname)) {
-                token = reader.peek();
-                task.setdecription(reader.nextString());
-            }
-            if ("status".equals(fieldname)) {
-                token = reader.peek();
-                task.setStatus(Status.valueOf(reader.nextString()));
-            }
-            if ("id".equals(fieldname)) {
-                token = reader.peek();
-                task.setId(reader.nextInt());
-            }
-            if ("typeTask".equals(fieldname)) {
-                token = reader.peek();
-                task.setTypeTask(TaskTypes.valueOf(reader.nextString()));
-            }
-            if ("duration".equals(fieldname)) {
-                token = reader.peek();
-                task.setDuration(Duration.parse(reader.nextString()));
-            }
-            if ("startTime".equals(fieldname)) {
-                token = reader.peek();
-                task.setStartTime(LocalDateTime.parse((reader.nextString())));
-            }
-        }
-        reader.endObject();
-        return task;
+            reader.endObject();
+            return task;
     }
 }
 

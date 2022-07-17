@@ -15,8 +15,8 @@ public class InMemoryTaskManager implements TaskManager {
     protected HashMap<Integer, Epic> epics = new HashMap<>();
     protected HashMap<Integer, SubTask> subTasks = new HashMap<>();
     protected transient Set<Task> priorityTasks = new TreeSet<>(new ComparatorTasks());
-    protected ArrayList<Task> notPriorityTasks = new ArrayList<>();
-    private final HistoryManager historyManager = Managers.getDefaultHistory();
+    protected transient ArrayList<Task> notPriorityTasks = new ArrayList<>();
+    private HistoryManager historyManager = Managers.getDefaultHistory();
 
     private boolean isDataTime(Task task) {
         return task.getStartTime() != null;
@@ -108,7 +108,6 @@ public class InMemoryTaskManager implements TaskManager {
                 priorityTasks.add(subTask);
                 subTasks.put(getGeneratorId(), subTask);
                 subTask.setId(generatorId);
-//                subTask.setEpicIds(epicId);
                 epics.get(subTask.getEpicIds()).getSubtasksId().add(generatorId);
             } catch (IllegalArgumentException e) {
                 System.out.println(e.getMessage());

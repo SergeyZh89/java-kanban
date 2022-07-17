@@ -19,7 +19,7 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public void add(Task task) {
-        if (customLinkedList.containsKey(task.getId())) {
+        if (task != null && customLinkedList.containsKey(task.getId())) {
             removeNode(customLinkedList.get(task.getId()));
         }
         lastLink(task);
@@ -59,15 +59,17 @@ public class InMemoryHistoryManager implements HistoryManager {
     }
 
     private void lastLink(Task task) {
-        Node oldTail = tail;
-        Node newNode = new Node(oldTail, task, null);
-        tail = newNode;
-        if (oldTail == null) {
-            head = newNode;
-        } else {
-            oldTail.next = newNode;
+        if (task != null) {
+            Node oldTail = tail;
+            Node newNode = new Node(oldTail, task, null);
+            tail = newNode;
+            if (oldTail == null) {
+                head = newNode;
+            } else {
+                oldTail.next = newNode;
+            }
+            customLinkedList.put(task.getId(), newNode);
         }
-        customLinkedList.put(task.getId(), newNode);
     }
 
     private List<Task> getTasks() {

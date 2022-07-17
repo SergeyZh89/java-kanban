@@ -7,6 +7,7 @@ import Model.Task;
 import java.io.*;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Calendar.JUNE;
@@ -237,8 +238,31 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
     }
 
     @Override
+    public List<Task> getHistory() {
+        return super.getHistory();
+    }
+
+    @Override
     public void deleteAllSubTasks() {
         super.deleteAllSubTasks();
+        save();
+    }
+
+    @Override
+    public void deleteTaskById(int id) {
+        super.deleteTaskById(id);
+        save();
+    }
+
+    @Override
+    public void deleteEpicById(int id) {
+        super.deleteEpicById(id);
+        save();
+    }
+
+    @Override
+    public void deleteSubTaskById(int id) {
+        super.deleteSubTaskById(id);
         save();
     }
 }
