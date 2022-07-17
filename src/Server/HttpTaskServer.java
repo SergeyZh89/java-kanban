@@ -56,7 +56,11 @@ public class HttpTaskServer {
     }
 
     public static void main(String[] args) throws IOException {
-new KVServer();
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println();
         HttpTaskServer server = new HttpTaskServer();
         server.start();
     }
