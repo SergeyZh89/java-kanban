@@ -1,11 +1,12 @@
 package TypeAdapters;
 
-import Manager.*;
+import Manager.InMemoryHistoryManager;
+import Manager.Managers;
+import Manager.Status;
+import Manager.TaskTypes;
 import Model.Epic;
 import Model.SubTask;
 import Model.Task;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
@@ -17,59 +18,63 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HistoryManagerAdapter extends TypeAdapter<HistoryManager> {
-    Gson gson = new GsonBuilder()
-            .registerTypeAdapter(LocalDateTime.class, new LocalDateAdapter())
-            .registerTypeAdapter(Task.class, new TaskAdapter())
-            .registerTypeAdapter(Epic.class, new EpicAdapter())
-            .registerTypeAdapter(SubTask.class, new SubTaskAdapter())
-            .create();
+public class HistoryManagerAdapter extends TypeAdapter<InMemoryHistoryManager> {
+    TaskAdapter taskAdapter = new TaskAdapter();
+    EpicAdapter epicAdapter = new EpicAdapter();
+    SubTaskAdapter subTaskAdapter = new SubTaskAdapter();
 
     @Override
-    public void write(JsonWriter writer, HistoryManager historyManager) throws IOException {
+    public void write(JsonWriter writer, InMemoryHistoryManager historyManager) throws IOException {
         writer.beginArray();
         List<Task> history = historyManager.getHistory();
         for (Task task : history) {
-            if (task.getTypeTask().equals("TASK")) {
-                gson.toJson(task);
-            }
-            if (task.getTypeTask().equals("EPIC")) {
-                gson.toJson(task);
-            }
-            if (task.getTypeTask().equals("SUBTASK")) {
-                gson.toJson(task);
+            switch (task.getTypeTask()) {
+                case TASK:
+                    taskAdapter.write(writer, task);
+
+                case EPIC:
+                    epicAdapter.write(writer, (Epic) task);
+
+                case SUBTASK:
+                    subTaskAdapter.write(writer, (SubTask) task);
+
             }
         }
         writer.endArray();
     }
 
     @Override
-    public HistoryManager read(JsonReader reader) throws IOException {
+    public InMemoryHistoryManager read(JsonReader reader) throws IOException {
+        reader.beginArray();
         String fieldName = null;
         InMemoryHistoryManager historyManager = (InMemoryHistoryManager) Managers.getDefaultHistory();
-        reader.beginArray();
         while (reader.hasNext()) {
             reader.beginObject();
             JsonToken token = reader.peek();
             if (token.equals(JsonToken.NAME)) {
                 fieldName = reader.nextName();
             }
-            if (token.equals("Task")) {
-                historyManager.add(readTask(reader));
+            if ("typeTask".equals((fieldName))) {
+                reader.peek();
+                String typeTask = reader.nextString();
+                switch (TaskTypes.valueOf(typeTask)) {
+                    case TASK:
+                        historyManager.add(readTask(reader, fieldName));
+                    case EPIC:
+                        historyManager.add(readEpic(reader, fieldName));
+                    case SUBTASK:
+                        historyManager.add(readSubTask(reader, fieldName));
+                    default:
+                        throw new RuntimeException("No such type task" + typeTask);
+                }
             }
-            if (token.equals("Epic")) {
-                historyManager.add(readEpic(reader));
-            }
-            if (token.equals("SubTask")) {
-                historyManager.add(readSubTask(reader));
-            }
+            reader.endObject();
         }
         reader.endArray();
         return historyManager;
     }
 
-    public Task readTask(JsonReader reader) throws IOException {
-        String fieldname = null;
+    public Task readTask(JsonReader reader, String fieldname) throws IOException {
         Task task = new Task();
         reader.beginObject();
         while (reader.hasNext()) {
@@ -110,10 +115,9 @@ public class HistoryManagerAdapter extends TypeAdapter<HistoryManager> {
         return task;
     }
 
-    public Epic readEpic(JsonReader reader) throws IOException {
+    public Epic readEpic(JsonReader reader, String fieldname) throws IOException {
         Epic epic = new Epic();
         reader.beginObject();
-        String fieldname = null;
         while (reader.hasNext()) {
             JsonToken token = reader.peek();
 
@@ -168,11 +172,9 @@ public class HistoryManagerAdapter extends TypeAdapter<HistoryManager> {
         return epic;
     }
 
-    public SubTask readSubTask(JsonReader reader) throws IOException {
+    public SubTask readSubTask(JsonReader reader, String fieldname) throws IOException {
         SubTask subTask = new SubTask();
         reader.beginObject();
-        String fieldname = null;
-
         while (reader.hasNext()) {
             JsonToken token = reader.peek();
 
@@ -216,3 +218,6 @@ public class HistoryManagerAdapter extends TypeAdapter<HistoryManager> {
         return subTask;
     }
 }
+
+
+

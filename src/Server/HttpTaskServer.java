@@ -28,9 +28,7 @@ public class HttpTaskServer {
     private static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
     private HttpServer server;
     private Gson gson;
-    private static FileBackedTasksManager fbtm = Managers.getDefaultFile();
     private HTTPTaskManager httpTaskManager;
-
 
     public void start() throws IOException {
         gson = new GsonBuilder()
@@ -42,7 +40,6 @@ public class HttpTaskServer {
                 .create();
         httpTaskManager = Managers.getDefault(URI.create("http://localhost:8078/register"));
         server = HttpServer.create(new InetSocketAddress(PORT), 0);
-        server.createContext("/tasks/all", new TaskHandler());
         server.createContext("/tasks/", new TaskHandler());
         server.createContext("/tasks/task", new TaskHandler());
         server.createContext("/tasks/task/?id=", new TaskHandler());
@@ -69,21 +66,22 @@ public class HttpTaskServer {
                 case "GET":
                     if (path.endsWith("/tasks/task")) {
                         exchange.sendResponseHeaders(200, 0);
-                        String tasksGson = gson.toJson(httpTaskManager.getTasks());
-                        os.write(tasksGson.getBytes(DEFAULT_CHARSET));
+                        String jsonTask = gson.toJson(httpTaskManager.getTasks());
+                        os.write(jsonTask.getBytes(DEFAULT_CHARSET));
                     } else if (path.endsWith("/tasks/task/")) {
                         exchange.sendResponseHeaders(200, 0);
                         String query = exchange.getRequestURI().getQuery().split("=")[1];
-                        String json = gson.toJson( httpTaskManager.getTask(Integer.parseInt(query)));
-                        os.write(json.getBytes(DEFAULT_CHARSET));
-                    } else if (path.endsWith("/tasks/subtask")) {
+                        String jsonTask = gson.toJson( httpTaskManager.getTask(Integer.parseInt(query)));
+                        os.write(jsonTask.getBytes(DEFAULT_CHARSET));
+                    } else if (path.endsWith("/tasks/subTask")) {
                         exchange.sendResponseHeaders(200, 0);
-                        String tasksGson = gson.toJson(httpTaskManager.getSubtasks());
-                        os.write(tasksGson.getBytes(DEFAULT_CHARSET));
-                    } else if (path.endsWith("/tasks/subtask/")) {
+                        String jsonSubTask = gson.toJson(httpTaskManager.getSubtasks());
+                        os.write(jsonSubTask.getBytes(DEFAULT_CHARSET));
+                    } else if (path.endsWith("/tasks/subTask/")) {
+                        exchange.sendResponseHeaders(200, 0);
                         String query = exchange.getRequestURI().getQuery().split("=")[1];
-                        String json = gson.toJson( httpTaskManager.getSubTask(Integer.parseInt(query)));
-                        os.write(json.getBytes(DEFAULT_CHARSET));
+                        String jsonSubTask = gson.toJson( httpTaskManager.getSubTask(Integer.parseInt(query)));
+                        os.write(jsonSubTask.getBytes(DEFAULT_CHARSET));
                     } else if (path.endsWith("/tasks/subTask/epic")) {
                         exchange.sendResponseHeaders(200, 0);
                         String query = exchange.getRequestURI().getQuery().split("=")[1];

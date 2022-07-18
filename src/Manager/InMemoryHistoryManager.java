@@ -84,4 +84,13 @@ public class InMemoryHistoryManager implements HistoryManager {
         }
         return tasks;
     }
+
+    @Override
+    public String toString() {
+        return "InMemoryHistoryManager{" +
+                "customLinkedList=" + customLinkedList +
+                ", head=" + head +
+                ", tail=" + tail +
+                '}';
+    }
 }

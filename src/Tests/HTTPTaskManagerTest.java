@@ -34,7 +34,6 @@ public class HTTPTaskManagerTest {
     private HTTPTaskManager managerFromFile;
     private HttpTaskServer serverTS;
     private Gson gson;
-    private Gson gson1;
     private HttpClient client;
     private KVServer serverKV;
 
@@ -76,10 +75,12 @@ public class HTTPTaskManagerTest {
                 .build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         int code = response.statusCode();
-        managerFromFile = HTTPTaskManager.loadFromFile();
+        System.out.println("ниже");
+        managerFromFile = manager.loadFromFile();
         Assertions.assertEquals(201, code);
         Assertions.assertEquals(1, managerFromFile.getTasks().size());
-        Assertions.assertEquals(task, managerFromFile.getTask(1));
+        System.out.println(manager.getHistory()+ "werewr");
+//        Assertions.assertEquals(task, managerFromFile.getTask(1));
         // Получение по id
         URI url2 = URI.create("http://localhost:8080/tasks/task/?id=1");
         HttpRequest request2 = HttpRequest.newBuilder()
@@ -98,6 +99,7 @@ public class HTTPTaskManagerTest {
         HttpResponse<String> response5 = client.send(request5, HttpResponse.BodyHandlers.ofString());
         Type taskHistory = new TypeToken<List<Task>>(){}.getType();
         List<Task> list = gson.fromJson(response5.body(), taskHistory);
+
         Assertions.assertEquals(managerFromFile.getHistory(), list);
         // Получение всех задач
         URI url3 = URI.create("http://localhost:8080/tasks/task");
@@ -117,7 +119,7 @@ public class HTTPTaskManagerTest {
                 .build();
         HttpResponse<String> response4 = client.send(request4, HttpResponse.BodyHandlers.ofString());
         int codeDelete = response4.statusCode();
-        managerFromFile = HTTPTaskManager.loadFromFile();
+        managerFromFile = manager.loadFromFile();
         Assertions.assertEquals(200, codeDelete);
         Assertions.assertEquals(0, managerFromFile.getTasks().size());
         // Создание задачи
@@ -140,7 +142,7 @@ public class HTTPTaskManagerTest {
                 .build();
         HttpResponse<String> response7 = client.send(request7, HttpResponse.BodyHandlers.ofString());
         int codeDeleteAll = response7.statusCode();
-        managerFromFile = HTTPTaskManager.loadFromFile();
+        managerFromFile = manager.loadFromFile();
         Assertions.assertEquals(200, codeDeleteAll);
         Assertions.assertEquals(0, managerFromFile.getTasks().size());
     }
@@ -159,11 +161,11 @@ public class HTTPTaskManagerTest {
                 .build();
         HttpResponse<String> responseEpic = client.send(requestEpic, HttpResponse.BodyHandlers.ofString());
         int code = responseEpic.statusCode();
-        managerFromFile = HTTPTaskManager.loadFromFile();
+        managerFromFile = manager.loadFromFile();
         Assertions.assertEquals(201, code);
         Assertions.assertEquals(1, managerFromFile.getEpics().size());
         Assertions.assertEquals(epic, managerFromFile.getEpic(1));
-        // Получение эпика
+        // Получение эпика по id
         URI url2 = URI.create("http://localhost:8080/tasks/epic/?id=1");
         HttpRequest requestEpic2 = HttpRequest.newBuilder()
                 .uri(url2)
@@ -212,7 +214,7 @@ public class HTTPTaskManagerTest {
                 .build();
         HttpResponse<String> response5 = client.send(request5, HttpResponse.BodyHandlers.ofString());
         int codeDelete = response5.statusCode();
-        managerFromFile = HTTPTaskManager.loadFromFile();
+        managerFromFile = manager.loadFromFile();
         Assertions.assertEquals(200, codeDelete);
         Assertions.assertEquals(0, managerFromFile.getEpics().size());
         // Создание задачи
@@ -234,13 +236,15 @@ public class HTTPTaskManagerTest {
                 .build();
         HttpResponse<String> response7 = client.send(request7, HttpResponse.BodyHandlers.ofString());
         int codeDeleteAll = response7.statusCode();
-        managerFromFile = HTTPTaskManager.loadFromFile();
+        managerFromFile = manager.loadFromFile();
         Assertions.assertEquals(200, codeDeleteAll);
         Assertions.assertEquals(0, managerFromFile.getEpics().size());
     }
 
     @Test
-    public void createSubTask() throws IOException, InterruptedException {
+    public void allTestsSubTasks() throws IOException, InterruptedException {
+        // Создаем эпик
+        System.out.println("1");
         URI urlEpic = URI.create("http://localhost:8080/tasks/epic/");
         Epic epic = new Epic("epic", "decr");
         epic.setId(1);
@@ -251,7 +255,8 @@ public class HTTPTaskManagerTest {
                 .POST(bodyEpic)
                 .build();
         client.send(requestEpic, HttpResponse.BodyHandlers.ofString());
-
+        // Создаем к нему подзадачу
+        System.out.println("2");
         URI urlSubTask = URI.create("http://localhost:8080/tasks/subTask/");
         SubTask subTask = new SubTask("subTask", "decr", 1,
                 Duration.ofMinutes(20),
@@ -265,9 +270,89 @@ public class HTTPTaskManagerTest {
                 .build();
         HttpResponse<String> responseSubTask = client.send(requestSubTask, HttpResponse.BodyHandlers.ofString());
         int code = responseSubTask.statusCode();
-        managerFromFile = HTTPTaskManager.loadFromFile();
+        managerFromFile = manager.loadFromFile();
         Assertions.assertEquals(201, code);
         Assertions.assertEquals(1, managerFromFile.getSubtasks().size());
+        // Получение подзадачи
+        System.out.println("3");
+        URI url2 = URI.create("http://localhost:8080/tasks/subTask/?id=2");
+        HttpRequest requestSubTask2 = HttpRequest.newBuilder()
+                .uri(url2)
+                .GET()
+                .build();
+        HttpResponse<String> responseSubTask2 = client.send(requestSubTask2, HttpResponse.BodyHandlers.ofString());
+        SubTask subTask1 = gson.fromJson(responseSubTask2.body(), SubTask.class);
+        Assertions.assertEquals(subTask, subTask1);
+//         Запрос истории
+        System.out.println("4");
+        URI url3 = URI.create("http://localhost:8080/tasks/history");
+        HttpRequest request3 = HttpRequest.newBuilder()
+                .uri(url3)
+                .GET()
+                .build();
+        HttpResponse<String> response3 = client.send(request3, HttpResponse.BodyHandlers.ofString());
+        List<Task> list = new ArrayList<>();
+        JsonElement jsonElement = JsonParser.parseString(response3.body());
+        JsonArray jsonArray = jsonElement.getAsJsonArray();
+        for (JsonElement element : jsonArray) {
+            JsonObject object = element.getAsJsonObject();
+            SubTask e = gson.fromJson(object, SubTask.class);
+            list.add(e);
+        }
+        Assertions.assertEquals(managerFromFile.getHistory(), list);
+        // Получение всех задач
+        System.out.println("5");
+        URI url4 = URI.create("http://localhost:8080/tasks/subTask");
+        HttpRequest request4 = HttpRequest.newBuilder()
+                .uri(url4)
+                .GET()
+                .build();
+        HttpResponse<String> response4 = client.send(request4, HttpResponse.BodyHandlers.ofString());
+        List<Task> list2 = new ArrayList<>();
+        JsonElement jsonElement2 = JsonParser.parseString(response4.body());
+        JsonArray jsonArray2 = jsonElement2.getAsJsonArray();
+        for (JsonElement element : jsonArray2) {
+            JsonObject object = element.getAsJsonObject();
+            Epic e = gson.fromJson(object, Epic.class);
+            list2.add(e);
+        }
+        Assertions.assertEquals(managerFromFile.getSubtasks(), list2);
+        // Удаление задачи
+        System.out.println("6");
+        URI url5 = URI.create("http://localhost:8080/tasks/subTask/?id=2");
+        HttpRequest request5 = HttpRequest.newBuilder()
+                .uri(url5)
+                .DELETE()
+                .build();
+        HttpResponse<String> response5 = client.send(request5, HttpResponse.BodyHandlers.ofString());
+        int codeDelete = response5.statusCode();
+        managerFromFile = manager.loadFromFile();
+        Assertions.assertEquals(200, codeDelete);
+        Assertions.assertEquals(0, managerFromFile.getSubtasks().size());
+        // Создание задачи
+        System.out.println("7");
+        URI url6 = URI.create("http://localhost:8080/tasks/subTask/");
+        SubTask subTask2 = new SubTask("subTask2", "decr", 1);
+        subTask2.setId(3);
+        String jsonSubTask2 = gson.toJson(subTask2);
+        HttpRequest.BodyPublisher bodySubTask2 = HttpRequest.BodyPublishers.ofString(jsonSubTask2);
+        HttpRequest request6 = HttpRequest.newBuilder()
+                .uri(url6)
+                .POST(bodySubTask2)
+                .build();
+        client.send(request6, HttpResponse.BodyHandlers.ofString());
+        // Удаление всех задач
+        System.out.println("8");
+        URI url7 = URI.create("http://localhost:8080/tasks/subTask");
+        HttpRequest request7 = HttpRequest.newBuilder()
+                .uri(url7)
+                .DELETE()
+                .build();
+        HttpResponse<String> response7 = client.send(request7, HttpResponse.BodyHandlers.ofString());
+        int codeDeleteAll = response7.statusCode();
+        managerFromFile = manager.loadFromFile();
+        Assertions.assertEquals(200, codeDeleteAll);
+        Assertions.assertEquals(0, managerFromFile.getSubtasks().size());
     }
 }
 

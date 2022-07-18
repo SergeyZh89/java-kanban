@@ -19,58 +19,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
         return load;
     }
 
-    public static void main(String[] args) {
-        FileBackedTasksManager fbt = Managers.getDefaultFile();
-        File file = new File("tasks.csv");
-        Task task1 = new Task("task1", "descr1", Duration.ofMinutes(29),
-                LocalDateTime.of(2022, JUNE, 1, 10, 00));
-        fbt.addNewTask(task1);
-        Task task2 = new Task("task2", "descr2", Duration.ofMinutes(29),
-                LocalDateTime.of(2022, JUNE, 1, 10, 30));
-        fbt.addNewTask(task2);
-        Task task3 = new Task("task3", "decr3");
-        fbt.addNewTask(task3);
-        Epic epic3 = new Epic("epic1", "descr1");
-        fbt.addNewEpic(epic3);
-        SubTask subTask4 = new SubTask("subtask1", "descr1", epic3.getId(),
-                Duration.ofMinutes(30), LocalDateTime.of(2022, JUNE,
-                1, 11, 00));
-        fbt.addNewSubTask(subTask4);
-        SubTask subTask5 = new SubTask("subtask2", "descr2", epic3.getId());
-        fbt.addNewSubTask(subTask5);
-        SubTask subTask6 = new SubTask("subtask2", "descr2", epic3.getId(),
-                Duration.ofMinutes(29), LocalDateTime.of(2022, JUNE,
-                1, 11, 30));
-        fbt.addNewSubTask(subTask6);
-        Epic epic7 = new Epic("epic2", "descr2");
-        fbt.addNewEpic(epic7);
-
-        fbt.updateTask(task1, 1, Status.IN_PROGRESS);
-
-        System.out.println(task1);
-
-
-        fbt.getTask(1);
-        fbt.getEpic(4);
-        fbt.getSubTask(5);
-
-
-        for (Task prioritizedTask : fbt.getPrioritizedTasks()) {
-            System.out.println(prioritizedTask.getStartTime() + " " + prioritizedTask.getId());
-        }
-        System.out.println(fbt.getTasks());
-        System.out.println(fbt.getEpics());
-        System.out.println(fbt.getSubtasks());
-        FileBackedTasksManager load = FileBackedTasksManager.loadFromFile(file);
-
-        System.out.println("____HYSTORY____");
-        System.out.println(load.getHistory());
-        System.out.println("_______________");
-        System.out.println(load.getTasks());
-        System.out.println(load.getEpics());
-        System.out.println(load.getSubtasks());
-    }
-
     public String toStringHistory() {
         StringBuilder sb = new StringBuilder();
         List<Task> taskList;

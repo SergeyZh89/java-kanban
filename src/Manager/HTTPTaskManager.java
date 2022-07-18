@@ -14,9 +14,9 @@ import java.time.LocalDateTime;
 
 public class HTTPTaskManager extends FileBackedTasksManager {
 
-   static KVTaskClient client;
-   static URI url;
-    static String key;
+    private KVTaskClient client;
+    private URI url;
+    private String key;
 
     public KVTaskClient getClient() {
         return client;
@@ -30,6 +30,9 @@ public class HTTPTaskManager extends FileBackedTasksManager {
 
     @Override
     public void save() {
+        HttpHelper httpHelper = new HttpHelper ();
+
+                String tasks = HTTPhel
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(LocalDateTime.class, new LocalDateAdapter())
                 .registerTypeAdapter(Task.class, new TaskAdapter())
@@ -45,7 +48,7 @@ public class HTTPTaskManager extends FileBackedTasksManager {
         }
     }
 
-    public static HTTPTaskManager loadFromFile() throws IOException, InterruptedException {
+    public HTTPTaskManager loadFromFile() throws IOException, InterruptedException {
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(LocalDateTime.class, new LocalDateAdapter())
                 .registerTypeAdapter(Task.class, new TaskAdapter())
@@ -53,6 +56,7 @@ public class HTTPTaskManager extends FileBackedTasksManager {
                 .registerTypeAdapter(SubTask.class, new SubTaskAdapter())
                 .registerTypeAdapter(HistoryManager.class, new HistoryManagerAdapter())
                 .create();
-        return gson.fromJson(client.load(key), HTTPTaskManager.class);
+        HTTPTaskManager manager = gson.fromJson(client.load(key), HTTPTaskManager.class);
+        return manager;
     }
 }
