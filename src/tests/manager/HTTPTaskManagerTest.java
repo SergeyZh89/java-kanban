@@ -1,10 +1,5 @@
 package manager;
 
-import org.junit.jupiter.api.BeforeEach;
-import server.HttpTaskServer;
-import server.KVServer;
-
-import java.io.IOException;
 import java.net.URI;
 
 public class HTTPTaskManagerTest extends TaskManagerTest<HTTPTaskManager> {

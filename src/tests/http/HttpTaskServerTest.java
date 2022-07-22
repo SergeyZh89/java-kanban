@@ -27,11 +27,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 public class HttpTaskServerTest {
-    KVServer kvServer;
-    HttpTaskServer httpTaskServer;
-    HttpClient client;
-
-    Gson gson = new GsonBuilder()
+    private KVServer kvServer;
+    private HttpTaskServer httpTaskServer;
+    private HttpClient client;
+    private Gson gson = new GsonBuilder()
             .registerTypeAdapter(Duration.class, new DurationAdapter().nullSafe())
             .registerTypeAdapter(LocalDateTime.class, new LocalDateAdapter().nullSafe())
             .create();
@@ -50,7 +49,6 @@ public class HttpTaskServerTest {
         this.kvServer.stop();
         this.httpTaskServer.stop();
     }
-
 
     @Test
     void allActionWithTask() throws IOException, InterruptedException {

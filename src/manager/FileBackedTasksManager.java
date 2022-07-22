@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public class FileBackedTasksManager extends InMemoryTaskManager implements TaskManager {
-
     public FileBackedTasksManager loadFromFile(File file) {
         FileBackedTasksManager load = new FileBackedTasksManager();
         load.fileFromString(file);

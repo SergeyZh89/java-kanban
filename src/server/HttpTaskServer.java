@@ -1,16 +1,17 @@
 package server;
 
-import manager.*;
-import model.Epic;
-import model.SubTask;
-import model.Task;
-import typeAdapters.DurationAdapter;
-import typeAdapters.LocalDateAdapter;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
+import manager.HTTPTaskManager;
+import manager.Managers;
+import model.Epic;
+import model.SubTask;
+import model.Task;
+import typeAdapters.DurationAdapter;
+import typeAdapters.LocalDateAdapter;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -21,7 +22,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public class HttpTaskServer {
-
     private static final int PORT = 8080;
     private HttpServer server;
     private Gson gson;
@@ -193,7 +193,6 @@ public class HttpTaskServer {
         }
         h.close();
     }
-
 
     private void sendText(HttpExchange h, String text) throws IOException {
         byte[] resp = text.getBytes(StandardCharsets.UTF_8);

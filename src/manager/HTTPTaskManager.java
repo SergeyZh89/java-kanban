@@ -13,7 +13,6 @@ import java.util.HashMap;
 import java.util.List;
 
 public class HTTPTaskManager extends FileBackedTasksManager implements TaskManager {
-
     private static KVTaskClient kvTaskClient;
     private URI url;
 
@@ -28,7 +27,6 @@ public class HTTPTaskManager extends FileBackedTasksManager implements TaskManag
         String epics = HTTPhelper.GSON.toJson(this.epics);
         String subTasks = HTTPhelper.GSON.toJson(this.subTasks);
         String history = HTTPhelper.GSON.toJson(this.getHistory());
-
         kvTaskClient.put("tasks/task", tasks);
         kvTaskClient.put("tasks/epic", epics);
         kvTaskClient.put("tasks/subTasks", subTasks);
@@ -54,5 +52,4 @@ public class HTTPTaskManager extends FileBackedTasksManager implements TaskManag
         }
         return manager;
     }
-
 }

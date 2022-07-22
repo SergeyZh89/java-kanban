@@ -26,7 +26,6 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
     public abstract T createTaskManager();
 
-
     private KVServer server;
     private HttpTaskServer server1;
 
@@ -135,11 +134,13 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     public void shouldBeFileBackupManager() {
         File file = new File("tasks.csv");
         FileBackedTasksManager fbk = Managers.getDefaultFile();
-        Task task = new Task("task1", "descr1", Duration.ofMinutes(30), LocalDateTime.of(2022, JUNE, 1, 10, 00));
+        Task task = new Task("task1", "descr1", Duration.ofMinutes(30)
+                , LocalDateTime.of(2022, JUNE, 1, 10, 00));
         fbk.addNewTask(task);
         Epic epic = new Epic("epic1", "descr1");
         fbk.addNewEpic(epic);
-        SubTask subTask = new SubTask("subtask2", "descr2", epic.getId(), Duration.ofMinutes(29), LocalDateTime.of(2022, JUNE, 1, 11, 30));
+        SubTask subTask = new SubTask("subtask2", "descr2", epic.getId()
+                , Duration.ofMinutes(29), LocalDateTime.of(2022, JUNE, 1, 11, 30));
         fbk.addNewSubTask(subTask);
         SubTask subTask2 = new SubTask("subtask2", "descr2", epic.getId());
         fbk.addNewSubTask(subTask2);

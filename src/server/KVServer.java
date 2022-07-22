@@ -25,7 +25,6 @@ public class KVServer {
     }
 
     private void load(HttpExchange h) throws IOException {
-
         try {
             System.out.println("\n/load");
             if (!hasAuth(h)) {
@@ -50,7 +49,6 @@ public class KVServer {
         } finally {
             h.close();
         }
-
     }
 
     private void save(HttpExchange h) throws IOException {
