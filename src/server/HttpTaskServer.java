@@ -1,7 +1,5 @@
 package server;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
@@ -10,29 +8,21 @@ import manager.Managers;
 import model.Epic;
 import model.SubTask;
 import model.Task;
-import typeAdapters.DurationAdapter;
-import typeAdapters.LocalDateAdapter;
+import service.HTTPhelper;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
-import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.List;
 
 public class HttpTaskServer {
     private static final int PORT = 8080;
     private HttpServer server;
-    private Gson gson;
     private HTTPTaskManager taskManager;
 
     public HttpTaskServer() throws IOException {
         this.taskManager = Managers.getDefault(URI.create("http://localhost:8078"));
-        gson = new GsonBuilder()
-                .registerTypeAdapter(Duration.class, new DurationAdapter().nullSafe())
-                .registerTypeAdapter(LocalDateTime.class, new LocalDateAdapter().nullSafe())
-                .create();
         server = HttpServer.create(new InetSocketAddress("localhost", PORT), 0);
         server.createContext("/app", this::handler);
     }
@@ -58,7 +48,7 @@ public class HttpTaskServer {
                         final String query = h.getRequestURI().getQuery();
                         if (query == null) {
                             final List<Task> tasks = taskManager.getTasks();
-                            final String response = gson.toJson(tasks, new TypeToken<List<Task>>() {
+                            final String response = HTTPhelper.GSON.toJson(tasks, new TypeToken<List<Task>>() {
                             }.getType());
                             sendText(h, response);
                             return;
@@ -66,7 +56,7 @@ public class HttpTaskServer {
                         String idParam = query.substring(3);// ?id=
                         final int id = Integer.parseInt(idParam);
                         final Task task = taskManager.getTask(id);
-                        final String response = gson.toJson(task);
+                        final String response = HTTPhelper.GSON.toJson(task);
                         sendText(h, response);
                     }
                     case "POST" -> {
@@ -75,7 +65,7 @@ public class HttpTaskServer {
                             h.sendResponseHeaders(400, 0);
                             return;
                         }
-                        final Task task = gson.fromJson(body, Task.class);
+                        final Task task = HTTPhelper.GSON.fromJson(body, Task.class);
                         if (taskManager.getTasks().size() != 0 && task.getId() != 0) {
                             for (Task task1 : taskManager.getTasks()) {
                                 if (task1.getId() == task.getId()) {
@@ -95,9 +85,7 @@ public class HttpTaskServer {
                         taskManager.deleteTaskById(id);
                         h.sendResponseHeaders(200, 0);
                     }
-                    default -> {
-                        h.sendResponseHeaders(404, 0);
-                    }
+                    default -> h.sendResponseHeaders(404, 0);
                 }
             }
             case "epic" -> {
@@ -106,7 +94,7 @@ public class HttpTaskServer {
                         final String query = h.getRequestURI().getQuery();
                         if (query == null) {
                             final List<Epic> epics = taskManager.getEpics();
-                            final String response = gson.toJson(epics, new TypeToken<List<Epic>>() {
+                            final String response = HTTPhelper.GSON.toJson(epics, new TypeToken<List<Epic>>() {
                             }.getType());
                             sendText(h, response);
                             return;
@@ -114,7 +102,7 @@ public class HttpTaskServer {
                         String idParam = query.substring(3);// ?id=
                         final int id = Integer.parseInt(idParam);
                         final Epic epic = taskManager.getEpic(id);
-                        final String response = gson.toJson(epic);
+                        final String response = HTTPhelper.GSON.toJson(epic);
                         sendText(h, response);
                     }
                     case "POST" -> {
@@ -124,7 +112,7 @@ public class HttpTaskServer {
                             return;
                         }
                         h.sendResponseHeaders(200, 0);
-                        final Epic epic = gson.fromJson(body, Epic.class);
+                        final Epic epic = HTTPhelper.GSON.fromJson(body, Epic.class);
                         taskManager.addNewEpic(epic);
                     }
                     case "DELETE" -> {
@@ -134,9 +122,7 @@ public class HttpTaskServer {
                         h.sendResponseHeaders(200, 0);
                         taskManager.deleteEpicById(id);
                     }
-                    default -> {
-                        h.sendResponseHeaders(404, 0);
-                    }
+                    default -> h.sendResponseHeaders(404, 0);
                 }
             }
             case "subTask" -> {
@@ -145,7 +131,7 @@ public class HttpTaskServer {
                         final String query = h.getRequestURI().getQuery();
                         if (query == null) {
                             final List<SubTask> subTasks = taskManager.getSubtasks();
-                            final String response = gson.toJson(subTasks, new TypeToken<List<SubTask>>() {
+                            final String response = HTTPhelper.GSON.toJson(subTasks, new TypeToken<List<SubTask>>() {
                             }.getType());
                             sendText(h, response);
                             return;
@@ -153,7 +139,7 @@ public class HttpTaskServer {
                         String idParam = query.substring(3);// ?id=
                         final int id = Integer.parseInt(idParam);
                         final SubTask subTask = taskManager.getSubTask(id);
-                        final String response = gson.toJson(subTask);
+                        final String response = HTTPhelper.GSON.toJson(subTask);
                         sendText(h, response);
                     }
                     case "POST" -> {
@@ -162,7 +148,7 @@ public class HttpTaskServer {
                             h.sendResponseHeaders(400, 0);
                             return;
                         }
-                        final SubTask subTask = gson.fromJson(body, SubTask.class);
+                        final SubTask subTask = HTTPhelper.GSON.fromJson(body, SubTask.class);
                         if (taskManager.getSubtasks().size() != 0 && subTask.getId() != 0) {
                             for (SubTask subTask1 : taskManager.getSubtasks()) {
                                 if (subTask1.getId() == subTask.getId()) {
@@ -181,10 +167,20 @@ public class HttpTaskServer {
                         taskManager.deleteSubTaskById(id);
                         h.sendResponseHeaders(200, 0);
                     }
-                    default -> {
-                        h.sendResponseHeaders(404, 0);
-                    }
+                    default -> h.sendResponseHeaders(404, 0);
                 }
+            }
+            case "priority" -> {
+                final List<Task> priority = taskManager.getPrioritizedTasks();
+                final String response = HTTPhelper.GSON.toJson(priority, new TypeToken<List<SubTask>>() {
+                }.getType());
+                sendText(h, response);
+            }
+            case "history" -> {
+                final List<Task> history = taskManager.getHistory();
+                final String response = HTTPhelper.GSON.toJson(history, new TypeToken<List<SubTask>>() {
+                }.getType());
+                sendText(h, response);
             }
             default -> {
                 System.out.println("Неизвестный зарос: " + h.getRequestURI());

@@ -1,16 +1,17 @@
 package manager;
 
 import client.KVTaskClient;
+import com.google.gson.reflect.TypeToken;
 import model.Epic;
 import model.SubTask;
 import model.Task;
 import service.HTTPhelper;
-import com.google.gson.reflect.TypeToken;
 
 import java.io.IOException;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 public class HTTPTaskManager extends FileBackedTasksManager implements TaskManager {
     private static KVTaskClient kvTaskClient;
@@ -23,33 +24,37 @@ public class HTTPTaskManager extends FileBackedTasksManager implements TaskManag
 
     @Override
     public void save() {
-        String tasks = HTTPhelper.GSON.toJson(this.tasks);
-        String epics = HTTPhelper.GSON.toJson(this.epics);
-        String subTasks = HTTPhelper.GSON.toJson(this.subTasks);
-        String history = HTTPhelper.GSON.toJson(this.getHistory());
-        kvTaskClient.put("tasks/task", tasks);
-        kvTaskClient.put("tasks/epic", epics);
-        kvTaskClient.put("tasks/subTasks", subTasks);
-        kvTaskClient.put("history", history);
+        kvTaskClient.put("task", HTTPhelper.GSON.toJson(this.tasks));
+        kvTaskClient.put("epic", HTTPhelper.GSON.toJson(this.epics));
+        kvTaskClient.put("subTasks", HTTPhelper.GSON.toJson(this.subTasks));
+        kvTaskClient.put("history", HTTPhelper.GSON.toJson(this.getHistory()));
+        kvTaskClient.put("priority", HTTPhelper.GSON.toJson(this.priorityTasks));
+        kvTaskClient.put("notPriority", HTTPhelper.GSON.toJson(this.notPriorityTasks));
     }
 
-
-    public static HTTPTaskManager load() throws IOException {
+    public static HTTPTaskManager load() {
         HTTPTaskManager manager = new HTTPTaskManager(URI.create("http://localhost:8078"));
-        String task = kvTaskClient.load("tasks/task");
-        String epic = kvTaskClient.load("tasks/epic");
-        String subTask = kvTaskClient.load("tasks/subTasks");
-        String history = kvTaskClient.load("history");
-        manager.tasks = HTTPhelper.GSON.fromJson(task, new TypeToken<HashMap<Integer, Task>>() {
+        manager.tasks = HTTPhelper.GSON.fromJson(kvTaskClient.load("task"),
+                new TypeToken<HashMap<Integer, Task>>() {
         }.getType());
-        manager.epics = HTTPhelper.GSON.fromJson(epic, new TypeToken<HashMap<Integer, Epic>>() {
+        manager.epics = HTTPhelper.GSON.fromJson(kvTaskClient.load("epic"),
+                new TypeToken<HashMap<Integer, Epic>>() {
         }.getType());
-        manager.subTasks = HTTPhelper.GSON.fromJson(subTask, new TypeToken<HashMap<Integer, SubTask>>() {
+        manager.subTasks = HTTPhelper.GSON.fromJson(kvTaskClient.load("subTasks"),
+                new TypeToken<HashMap<Integer, SubTask>>() {
         }.getType());
-        List<Task> list = HTTPhelper.GSON.fromJson(history, new TypeToken<List<Task>>(){}.getType());
+        List<Task> list = HTTPhelper.GSON.fromJson(kvTaskClient.load("history"),
+                new TypeToken<List<Task>>() {
+        }.getType());
         for (Task task1 : list) {
             manager.getTask(task1.getId());
         }
+        manager.priorityTasks = HTTPhelper.GSON.fromJson(kvTaskClient.load("priority"),
+                new TypeToken<Set<Task>>() {
+        }.getType());
+        manager.notPriorityTasks = HTTPhelper.GSON.fromJson(kvTaskClient.load("notPriority"),
+                new TypeToken<List<Task>>() {
+        }.getType());
         return manager;
     }
 }

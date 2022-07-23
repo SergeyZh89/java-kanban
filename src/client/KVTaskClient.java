@@ -23,26 +23,34 @@ public class KVTaskClient {
                 .uri(URI.create(url + "/save/" + key + "?" + "API_TOKEN=" + apiToken))
                 .POST(HttpRequest.BodyPublishers.ofString(json))
                 .build();
+        HttpResponse<Void> response = null;
         try {
-            client.send(request, HttpResponse.BodyHandlers.discarding());
+        response = client.send(request, HttpResponse.BodyHandlers.discarding());
+        if (response.statusCode() != 200) {
+            throw new RuntimeException("Ожидался ответ 200");
+        }
         } catch (IOException | InterruptedException e) {
-            throw new RuntimeException("Can't do save request", e);
+            throw new RuntimeException(e);
         }
     }
 
-    public String load(String key) throws IOException {
-        try {
+    public String load(String key) {
             HttpClient client = HttpClient.newHttpClient();
             HttpRequest request = HttpRequest.newBuilder()
                     .GET()
                     .uri(URI.create(url + "/load/" + key + "?" + "API_TOKEN=" + apiToken))
                     .version(HttpClient.Version.HTTP_1_1)
                     .build();
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            return response.body();
-        } catch (InterruptedException e) {
-            throw new RuntimeException("Can't do save request", e);
+        HttpResponse<String> response = null;
+        try {
+            response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() != 200) {
+                throw new RuntimeException("Ожидался ответ 200");
+            }
+        } catch (IOException | InterruptedException e) {
+            throw new RuntimeException(e);
         }
+        return response.body();
     }
 
     private String register() {

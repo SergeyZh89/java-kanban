@@ -68,6 +68,20 @@ public class HttpTaskServerTest {
         response = client.send(request, HttpResponse.BodyHandlers.ofString());
         Task task1 = gson.fromJson(response.body(), Task.class);
         assertEquals(task, task1, "Задачи не совпадают");
+        // Get History
+        url = URI.create("http://localhost:8080/app/history");
+        request = HttpRequest.newBuilder().uri(url).GET().build();
+        response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        List<Task> history = gson.fromJson(response.body(), new TypeToken<List<Task>>() {
+        }.getType());
+        assertEquals(1, history.size(), "Неверное количество");
+        // Get PrioritizedTasks
+        url = URI.create("http://localhost:8080/app/priority");
+        request = HttpRequest.newBuilder().uri(url).GET().build();
+        response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        List<Task> priority = gson.fromJson(response.body(), new TypeToken<List<Task>>() {
+        }.getType());
+        assertEquals(1, priority.size(), "Неверное количество");
         // Delete Task id=1
         url = URI.create("http://localhost:8080/app/task?id=1");
         request = HttpRequest.newBuilder().uri(url).DELETE().build();
@@ -79,9 +93,10 @@ public class HttpTaskServerTest {
         request = HttpRequest.newBuilder().uri(url).GET().build();
         response = client.send(request, HttpResponse.BodyHandlers.ofString());
         code = response.statusCode();
-        List<Task> list = gson.fromJson(response.body(), new TypeToken<List<Task>>(){}.getType());
+        List<Task> list = gson.fromJson(response.body(), new TypeToken<List<Task>>() {
+        }.getType());
         assertEquals(200, code, "Список не получен");
-        assertEquals(0, list.size(), "Задачи не совпадают");
+        assertEquals(0, list.size(), "Неверное количество");
     }
 
     @Test
@@ -102,6 +117,20 @@ public class HttpTaskServerTest {
         response = client.send(request, HttpResponse.BodyHandlers.ofString());
         Epic epic1 = gson.fromJson(response.body(), Epic.class);
         assertEquals(epic, epic1, "Задачи не совпадают");
+        // Get History
+        url = URI.create("http://localhost:8080/app/history");
+        request = HttpRequest.newBuilder().uri(url).GET().build();
+        response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        List<Task> history = gson.fromJson(response.body(), new TypeToken<List<Task>>() {
+        }.getType());
+        assertEquals(1, history.size(), "Неверное количество");
+        // Get PrioritizedTasks
+        url = URI.create("http://localhost:8080/app/priority");
+        request = HttpRequest.newBuilder().uri(url).GET().build();
+        response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        List<Task> priority = gson.fromJson(response.body(), new TypeToken<List<Task>>() {
+        }.getType());
+        assertEquals(0, priority.size(), "Неверное количество");
         // Delete Epic id=1
         url = URI.create("http://localhost:8080/app/epic?id=1");
         request = HttpRequest.newBuilder().uri(url).DELETE().build();
@@ -113,9 +142,10 @@ public class HttpTaskServerTest {
         request = HttpRequest.newBuilder().uri(url).GET().build();
         response = client.send(request, HttpResponse.BodyHandlers.ofString());
         code = response.statusCode();
-        List<Task> list = gson.fromJson(response.body(), new TypeToken<List<Epic>>(){}.getType());
+        List<Task> list = gson.fromJson(response.body(), new TypeToken<List<Epic>>() {
+        }.getType());
         assertEquals(200, code, "Список не получен");
-        assertEquals(0, list.size(), "Задачи не совпадают");
+        assertEquals(0, list.size(), "Неверное количество");
     }
 
     @Test
@@ -143,7 +173,20 @@ public class HttpTaskServerTest {
         request = HttpRequest.newBuilder().uri(url).GET().build();
         response = client.send(request, HttpResponse.BodyHandlers.ofString());
         SubTask subTask1 = gson.fromJson(response.body(), SubTask.class);
-        assertEquals(subTask, subTask1, "Задачи не совпадают");
+        assertEquals(subTask, subTask1, "Неверное количество");
+        url = URI.create("http://localhost:8080/app/history");
+        request = HttpRequest.newBuilder().uri(url).GET().build();
+        response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        List<Task> history = gson.fromJson(response.body(), new TypeToken<List<Task>>() {
+        }.getType());
+        assertEquals(1, history.size(), "Неверное количество");
+        // Get PrioritizedTasks
+        url = URI.create("http://localhost:8080/app/priority");
+        request = HttpRequest.newBuilder().uri(url).GET().build();
+        response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        List<Task> priority = gson.fromJson(response.body(), new TypeToken<List<Task>>() {
+        }.getType());
+        assertEquals(1, priority.size(), "Неверное количество");
         // Delete SubTask id=2
         url = URI.create("http://localhost:8080/app/subTask?id=2");
         request = HttpRequest.newBuilder().uri(url).DELETE().build();
@@ -155,8 +198,9 @@ public class HttpTaskServerTest {
         request = HttpRequest.newBuilder().uri(url).GET().build();
         response = client.send(request, HttpResponse.BodyHandlers.ofString());
         code = response.statusCode();
-        List<Task> list = gson.fromJson(response.body(), new TypeToken<List<SubTask>>(){}.getType());
+        List<Task> list = gson.fromJson(response.body(), new TypeToken<List<SubTask>>() {
+        }.getType());
         assertEquals(200, code, "Список не получен");
-        assertEquals(0, list.size(), "Задачи не совпадают");
+        assertEquals(0, list.size(), "Неверное количество");
     }
 }
